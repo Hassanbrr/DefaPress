@@ -11,13 +11,18 @@ namespace DefaPress.Presentation.Web.Infrastructure.Extensions
         public static void AddCustomServicesToContainer(this IServiceCollection services, IConfiguration configuration)
         {
 
-         
+
+            services.AddControllersWithViews(); 
+            services.AddRazorPages();
 
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-    
- 
+
+          
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<ApplicationDbContext>();
+
+
         }
 
     }

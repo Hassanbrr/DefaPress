@@ -2,8 +2,9 @@ using System.Diagnostics;
 using DefaPress.Presentation.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DefaPress.Presentation.Web.Controllers
+namespace DefaPress.Presentation.Web.Areas.Client.Controllers
 {
+    [Area("Client")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

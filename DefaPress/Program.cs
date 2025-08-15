@@ -1,9 +1,11 @@
 using DefaPress.Presentation.Web.Infrastructure.Extensions;
+using DefaPress.Repository.Context;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
+ 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
 builder.Services.AddCustomServicesToContainer(builder.Configuration);
 
 var app = builder.Build();
@@ -18,15 +20,15 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
-
+app.MapRazorPages();
 app.UseAuthorization();
 
 app.MapStaticAssets();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    name: "areas",
+    pattern: "{area=Client}/{controller=Home}/{action=Index}/{id?}"
+);
 
 
 app.Run();
