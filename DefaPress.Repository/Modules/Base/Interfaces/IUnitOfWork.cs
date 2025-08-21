@@ -1,5 +1,5 @@
-﻿using DefaPress.Repository.Modules.ArticleCategory.Interfaces;
-using DefaPress.Repository.Modules.ArticlePost.Interfaces;
+﻿using DefaPress.Repository.Modules.Article.Interfaces;
+using DefaPress.Repository.Modules.ArticleCategory.Interfaces;
 
 namespace DefaPress.Repository.Modules.Base.Interfaces;
 

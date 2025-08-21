@@ -7,23 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Comments\Commands\" />
-    <Folder Include="Comments\Handlers\" />
-    <Folder Include="Comments\Queries\" />
-    <Folder Include="Comments\Validators\" />
-    <Folder Include="Setting\Commands\" />
-    <Folder Include="Setting\Handlers\" />
-    <Folder Include="Setting\Queries\" />
-    <Folder Include="Setting\Validators\" />
-    <Folder Include="Tags\Commands\" />
-    <Folder Include="Tags\Handlers\" />
-    <Folder Include="Tags\Queries\" />
-    <Folder Include="Tags\Validators\" />
-    <Folder Include="ArticleCategories\Commands\" />
-    <Folder Include="ArticleCategories\Handlers\" />
-    <Folder Include="ArticleCategories\Queries\" />
-    <Folder Include="ArticleCategories\Validators\" />
-    <Folder Include="Articles\Queries\" />
+    <Compile Remove="Articles\**" />
+    <Compile Remove="Comments\**" />
+    <Compile Remove="Setting\**" />
+    <Compile Remove="Tags\**" />
+    <EmbeddedResource Remove="Articles\**" />
+    <EmbeddedResource Remove="Comments\**" />
+    <EmbeddedResource Remove="Setting\**" />
+    <EmbeddedResource Remove="Tags\**" />
+    <None Remove="Articles\**" />
+    <None Remove="Comments\**" />
+    <None Remove="Setting\**" />
+    <None Remove="Tags\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +30,10 @@
   <ItemGroup>
     <ProjectReference Include="..\DefaPress.Repository\DefaPress.Repository.csproj" />
     <ProjectReference Include="..\Helps\Helps.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Base\" />
   </ItemGroup>
 
 </Project>

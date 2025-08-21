@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DefaPress.Application.ArticleCategories.Dtos
+namespace DefaPress.Application.DTOs
 {
     public class ArticleCategoryDto
     {
-        public int Id { get; set; }
+        public int CategoryId { get; set; }
         public string Name { get; set; }
         public string Slug { get; set; }
         public string Description { get; set; }

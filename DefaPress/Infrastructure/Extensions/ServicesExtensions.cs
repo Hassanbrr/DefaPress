@@ -13,13 +13,9 @@ namespace DefaPress.Presentation.Web.Infrastructure.Extensions
 
 
             services.AddControllersWithViews(); 
-            services.AddRazorPages();
-
-
+            services.AddRazorPages(); 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-
-          
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))); 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<ApplicationDbContext>();
 
 
