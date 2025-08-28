@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace DefaPress.Repository.Migrations
+namespace DefaPress.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class addModels : Migration

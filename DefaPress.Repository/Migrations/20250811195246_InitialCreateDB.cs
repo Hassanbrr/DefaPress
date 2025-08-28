@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace DefaPress.Repository.Migrations
+namespace DefaPress.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreateDB : Migration

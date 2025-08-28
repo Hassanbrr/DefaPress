@@ -1,5 +1,4 @@
 using DefaPress.Presentation.Web.Infrastructure.Extensions;
-using DefaPress.Repository.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,7 +26,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "areas",
-    pattern: "{area=Client}/{controller=Home}/{action=Index}/{id?}"
+    pattern: "{area=Admin}/{controller=Dashboard}/{action=Index}/{id?}"
 );
 
 

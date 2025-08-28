@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaPress.Domain", "..\Defa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaPress.Application", "..\DefaPress.Application\DefaPress.Application.csproj", "{FF2C4EE8-3838-4113-A1BB-EDD9D325E0AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaPress.Repository", "..\DefaPress.Repository\DefaPress.Repository.csproj", "{6396EF70-E4DF-4993-A89F-557DBC67B3C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaPress.Infrastructure", "..\DefaPress.Repository\DefaPress.Infrastructure.csproj", "{6396EF70-E4DF-4993-A89F-557DBC67B3C3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Helps", "Helps", "{9B5C89D0-0CD5-430E-A2B1-877F0B963773}"
 EndProject

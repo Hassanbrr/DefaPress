@@ -1,9 +1,10 @@
 ﻿using System.Linq.Expressions;
-using DefaPress.Repository.Context;
-using DefaPress.Repository.Modules.Base.Interfaces;
+using DefaPress.Infrastructure.Context;
+using DefaPress.Infrastructure.Modules.Base.Interfaces;
+ 
 using Microsoft.EntityFrameworkCore;
 
-namespace DefaPress.Repository.Modules.Base.Implements;
+namespace DefaPress.Infrastructure.Modules.Base.Implements;
 public class Repository<T> : IRepository<T> where T : class
 {
     protected readonly ApplicationDbContext _context;

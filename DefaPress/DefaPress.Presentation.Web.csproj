@@ -24,13 +24,13 @@
   <ItemGroup>
     <ProjectReference Include="..\DefaPress.Application\DefaPress.Application.csproj" />
     <ProjectReference Include="..\DefaPress.Domain\DefaPress.Domain.csproj" />
-    <ProjectReference Include="..\DefaPress.Repository\DefaPress.Repository.csproj" />
+    <ProjectReference Include="..\DefaPress.Repository\DefaPress.Infrastructure.csproj" />
     <ProjectReference Include="..\Helps\Helps.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Admin\Controllers\" />
     <Folder Include="Controllers\" />
+    <Folder Include="wwwroot\Client\" />
   </ItemGroup>
 
 </Project>

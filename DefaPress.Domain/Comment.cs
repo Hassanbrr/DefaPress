@@ -11,7 +11,13 @@ namespace DefaPress.Domain
         public int Id { get; set; }
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; }
         public bool IsApproved { get; set; }
+
+        // Parent Reply (Nested Comments)
+        public int? ParentCommentId { get; set; }
+        public Comment? ParentComment { get; set; }
+        public ICollection<Comment> Replies { get; set; }
 
         // FK
         public int ArticleId { get; set; }

@@ -1,6 +1,6 @@
-﻿using DefaPress.Repository.Modules.Base.Interfaces;
+﻿using DefaPress.Infrastructure.Modules.Base.Interfaces;
 
-namespace DefaPress.Repository.Modules.Article.Interfaces;
+namespace DefaPress.Infrastructure.Modules.Article.Interfaces;
 
 public interface IArticleRepository : IRepository<Domain.Article>
 {

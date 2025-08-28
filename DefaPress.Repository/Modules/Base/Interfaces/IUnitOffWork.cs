@@ -1,7 +1,8 @@
-﻿using DefaPress.Repository.Modules.Article.Interfaces;
-using DefaPress.Repository.Modules.ArticleCategory.Interfaces;
+﻿using DefaPress.Infrastructure.Modules.Article.Interfaces;
+using DefaPress.Infrastructure.Modules.ArticleCategory.Interfaces;
+ 
 
-namespace DefaPress.Repository.Modules.Base.Interfaces;
+namespace DefaPress.Infrastructure.Modules.Base.Interfaces;
 
 public interface IUnitOffWork
 {

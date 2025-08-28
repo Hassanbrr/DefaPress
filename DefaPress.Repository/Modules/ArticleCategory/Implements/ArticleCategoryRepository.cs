@@ -1,8 +1,9 @@
-﻿using DefaPress.Repository.Context;
-using DefaPress.Repository.Modules.ArticleCategory.Interfaces;
-using DefaPress.Repository.Modules.Base.Implements;
+﻿using DefaPress.Infrastructure.Context;
+using DefaPress.Infrastructure.Modules.ArticleCategory.Interfaces;
+using DefaPress.Infrastructure.Modules.Base.Implements;
+ 
 
-namespace DefaPress.Repository.Modules.ArticleCategory.Implements;
+namespace DefaPress.Infrastructure.Modules.ArticleCategory.Implements;
 
 public class ArticleCategoryRepository :Repository<Domain.ArticleCategory>,IArticleCategoryRepository
 {

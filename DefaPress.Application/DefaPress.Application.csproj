@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DefaPress.Repository\DefaPress.Repository.csproj" />
+    <ProjectReference Include="..\DefaPress.Repository\DefaPress.Infrastructure.csproj" />
     <ProjectReference Include="..\Helps\Helps.csproj" />
   </ItemGroup>
 

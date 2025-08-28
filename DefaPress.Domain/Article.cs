@@ -1,4 +1,4 @@
-﻿using DefaPress.Domain.YourProject.Domain.Entities;
+﻿ 
  
 
 namespace DefaPress.Domain
@@ -11,8 +11,14 @@ namespace DefaPress.Domain
         public string Summary { get; set; }
         public string Content { get; set; }
         public string? ImageUrl { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; }
         public DateTime? PublishedAt { get; set; }
         public bool IsPublished { get; set; }
+        public int ViewsCount { get; set; } = 0;
+        public string? Source { get; set; }
+        public bool IsBreakingNews { get; set; } = false;
+        public bool IsFeatured { get; set; } = false;
 
         // FK
         public int ArticleCategoryId { get; set; }
@@ -24,5 +30,6 @@ namespace DefaPress.Domain
         // Navigation
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Tag> Tags { get; set; }
+        public ICollection<MediaFile> MediaFiles { get; set; }
     }
 }

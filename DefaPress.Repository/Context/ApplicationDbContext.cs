@@ -1,11 +1,10 @@
-﻿using Azure;
-using DefaPress.Domain;
-using DefaPress.Domain.YourProject.Domain.Entities;
+﻿using DefaPress.Domain;
+ 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace DefaPress.Repository.Context;
+namespace DefaPress.Infrastructure.Context;
 
 public class ApplicationDbContext : IdentityDbContext<IdentityUser>
 {

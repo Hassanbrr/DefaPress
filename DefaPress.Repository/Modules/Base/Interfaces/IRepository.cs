@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace DefaPress.Repository.Modules.Base.Interfaces;
+namespace DefaPress.Infrastructure.Modules.Base.Interfaces;
 
 public interface IRepository<T> where T : class
 {

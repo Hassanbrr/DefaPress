@@ -9,10 +9,10 @@ namespace DefaPress.Domain
     public class ArticleCategory
     {
         public int CategoryId { get; set; }
-
         public string Name { get; set; }
         public string? Slug { get; set; }
         public string? Description { get; set; }
+        public int DisplayOrder { get; set; } = 0;
 
         // Parent-Child Relationship
         public int? ParentCategoryId { get; set; }
@@ -22,4 +22,5 @@ namespace DefaPress.Domain
         // Navigation
         public ICollection<Article> Articles { get; set; }
     }
+
 }

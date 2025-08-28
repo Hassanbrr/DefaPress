@@ -1,9 +1,10 @@
-﻿using DefaPress.Repository.Context;
-using DefaPress.Repository.Modules.Article.Interfaces;
-using DefaPress.Repository.Modules.ArticleCategory.Interfaces;
-using DefaPress.Repository.Modules.Base.Interfaces;
+﻿using DefaPress.Infrastructure.Context;
+using DefaPress.Infrastructure.Modules.Article.Interfaces;
+using DefaPress.Infrastructure.Modules.ArticleCategory.Interfaces;
+using DefaPress.Infrastructure.Modules.Base.Interfaces;
+ 
 
-namespace DefaPress.Repository.Modules.Base.Implements
+namespace DefaPress.Infrastructure.Modules.Base.Implements
 {
     public class UnitOfWork : IUnitOffWork
     {
