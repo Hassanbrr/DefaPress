@@ -25,7 +25,7 @@ public class Repository<T> : IRepository<T> where T : class
 
     public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, string? includeProperties = null, CancellationToken ct = default)
     {
-        IQueryable<T> query = _dbSet.AsNoTracking(); // حذف ToListAsync در این مرحله
+        IQueryable<T> query = _dbSet.AsNoTracking().Where(predicate); // حذف ToListAsync در این مرحله
 
         if (!string.IsNullOrEmpty(includeProperties))
         {

@@ -26,11 +26,11 @@ namespace DefaPress.Application.Services
         public async Task<IEnumerable<ArticleCategoryDto>> GetAllCategoriesAsync(CancellationToken cancellationToken = default)
         {
             // includeProperties could be used if repo supports string includes; we'll request all and map
-            var entities = (await _uow.ArticleCategoryRepository.GetAllAsync(includeProperties: "ParentCategory", ct: cancellationToken))
+            var categories = (await _uow.ArticleCategoryRepository.GetAllAsync(includeProperties: "ParentCategory", ct: cancellationToken))
                 .OrderBy(c => c.DisplayOrder)
                 .ToList();
 
-            return _mapper.Map<List<ArticleCategoryDto>>(entities);
+            return _mapper.Map<List<ArticleCategoryDto>>(categories);
         }
 
         public async Task<IEnumerable<ArticleCategoryDto>> GetCategoryTreeAsync(int maxDepth = 5, CancellationToken cancellationToken = default)

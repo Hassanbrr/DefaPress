@@ -32,8 +32,4 @@
     <ProjectReference Include="..\Helps\Helps.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Base\" />
-  </ItemGroup>
-
 </Project>
