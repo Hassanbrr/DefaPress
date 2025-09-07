@@ -1,0 +1,155 @@
+﻿@model IEnumerable<ArticleCategoryDto>
+
+<div class="container-fluid">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 p-2">
+
+        <div class="row">
+            <div class="page-header breadcrumb-header p-3 mr-2 ml-2 m-2">
+                <div class="row align-items-end ">
+                    <div class="col-lg-12">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item "><a as><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item active"> دسته بندی وبلاگ ها </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shade h-100 ">
+            <div class="card-body table-responsive">
+                <div class="d-flex justify-content-around">
+                    <h5 class="card-title">لیست دسته بندی ها</h5>
+                    <button class="btn o-primary text-center" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="openCategoryModal(0)">اضافه کردن</button>
+                </div>
+                <hr>
+
+                <table id="CategoryTable" class="table table-striped table-bordered m-1" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>شناسه</th>
+                            <th>نام</th>
+                            <th>ترتیب نمایش</th>
+                            <th>اسلاگ</th>
+                            <th>توضیحات</th>
+                            <th>دسته والد</th>
+                            <th>تنظیمات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int counter = 1;
+                        }
+                        @foreach (var category in Model)
+                        {
+                            <tr>
+                                <td>@counter</td>
+                                <td>@category.Name</td>
+                                <td>@category.DisplayOrder</td>
+                                <td>@category.Slug</td>
+                                <td>@category.Description</td>
+                                <td>@(category.ParentCategoryName)</td>
+                                <td>
+                                    <button type="button" class="btn c-warning" data-bs-toggle="modal" data-bs-target="#categoryModal"
+                                            onclick="openCategoryModal(@category.CategoryId)">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn c-forth btn-sm" onclick="openDeleteModal(@category.CategoryId)">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            counter++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Create/Edit -->
+<div class="modal fade" id="categoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="categoryModalContent" style="background-color:#404040;">
+            <!-- فرم Upsert اینجا به‌صورت Ajax بارگذاری می‌شود -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal Delete -->
+<div class="modal fade" id="DeleteConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">حذف دسته‌بندی</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>آیا مطمئن هستید که می‌خواهید این دسته‌بندی را حذف کنید؟</p>
+                <input type="hidden" id="deleteCategoryId" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleteCategory()">حذف</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#CategoryTable').DataTable({
+                language: { url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/fa.json' },
+                responsive: true,
+                pagingType: "full_numbers",
+                dom: '<"top"l>rt<"bottom"ip><"clear">',
+                columnDefs: [{ orderable: false, targets: [5] }],
+                lengthMenu: [[5, 10, 20, -1], [5, 10, 20, "همه"]],
+                order: [[0, 'asc']]
+            });
+        });
+
+        // باز کردن مدال Create/Edit
+        function openCategoryModal(id) {
+            var url = '@Url.Action("Upsert", "ArticleCategoryAdmin", new { area = "Admin" })' + (id ? '?id=' + id : '');
+            $.get(url, function (data) {
+                $('#categoryModalContent').html(data);
+                // 🔴 فعال کردن دوباره اعتبارسنجی روی فرم
+                $.validator.unobtrusive.parse("#CategoryForm");
+            });
+        }
+
+        // ارسال فرم با Ajax
+        $(document).on("submit", "#CategoryForm", function (e) {
+            e.preventDefault();
+            var form = $(this);
+
+            $.ajax({
+                url: form.attr("action"),
+                type: form.attr("method"),
+                data: form.serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        $("#categoryModal").modal("hide");
+                        location.reload();
+                    } else {
+                        $("#categoryModalContent").html(response);
+                        // 🔴 دوباره bind کردن اعتبارسنجی بعد از جایگزینی Partial
+                        $.validator.unobtrusive.parse("#CategoryForm");
+                    }
+                },
+                error: function () {
+                    alert("خطایی در ثبت دسته‌بندی رخ داده است!");
+                }
+            });
+        });
+
+    </script>
+}

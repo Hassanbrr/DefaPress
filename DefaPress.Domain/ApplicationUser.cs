@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿ 
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
 namespace DefaPress.Domain
@@ -10,6 +7,7 @@ namespace DefaPress.Domain
 
     public class ApplicationUser : IdentityUser
     {
+        [Required]
         public string FullName { get; set; }
         public string? ProfileImageUrl { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

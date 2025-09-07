@@ -1,0 +1,287 @@
+﻿
+.li_subset {
+    height: max-content;
+}
+
+.submenu {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-auto-rows: auto;
+    gap: 24px 81px;
+    list-style-type: disc;
+    border: 1px solid rgb(211, 211, 211);
+    border-radius: 15px;
+    padding: 20px 43px 20px 64px;
+    width: 100%;
+    font-size: 15px;
+    height: inherit;
+    max-width: 1240px;
+}
+
+    .submenu li {
+        color: #515151;
+        padding: 7px 12px;
+        border-radius: 4px;
+        transition: transform 0.2s, background-color 0.2s;
+        min-width: 162px;
+        width: max-content;
+    }
+
+        .submenu li:hover {
+            background-color: #e9e9e9;
+            transform: translateY(-2px);
+           /* min-width: 162px;         
+            width: max-content;*/
+        }
+
+
+.submenuOrginal {
+    flex-direction: row-reverse;
+    background: #fff;
+    height: max-content;
+    display: none;
+    flex-direction: row-reverse;
+    justify-content: space-around;
+    max-height: 428px;
+    overflow-y: auto;
+    text-align: right;
+    position: absolute;
+    box-shadow: silver 0px 21px 20px;
+    right: 0;
+    left: 0;
+    z-index: 1000;
+    padding: 24px 20px;
+    margin: 0;
+    height: max-content;
+}
+
+
+.header {
+    background-color: #fff;
+    box-shadow: 0px 0px 1px silver;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.submenu {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.nav-item {
+    cursor: pointer;
+}
+
+.has-submenu:hover .submenu .submenuOrginal {
+    display: block;
+}
+
+.Nav_subset {
+    padding: 0px 11px 17px 0px;
+    background: #d7d7d7;
+    display: none;
+    animation-duration: 0.2s;
+}
+
+.Icon_category {
+    margin-right: 9px;
+}
+
+/*.Icon_category_moblie {
+    margin-right: 110px;
+}
+*/
+.TitleMenoMobile {
+    margin-bottom: 5px;
+}
+
+.SignCategory {
+    display: flex !important;
+    justify-content: space-between;
+}
+.DImage_Meno {
+    height: 47%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    width: 26%;
+    position: absolute;
+    left: 60px;
+    border: 1px solid rgb(211, 211, 211);
+    /*   padding: 25px 38px 15px 33px;*/
+    border-radius: 20px;
+    text-align: center;
+}
+
+
+.Image_Meno {
+    width: 100%;
+    max-width: 356px;
+    /* border-radius: 7px;*/
+    height: auto;
+    margin-left: 20px;
+    border-top-right-radius: 16px;
+   /* margin-left: 20px;*/
+    border-top-left-radius: 16px;
+}
+
+.Da_Meno {
+    position: static;
+    display: flex;
+    padding: 0px 53px;
+    flex-direction: column;
+    flex: 1;
+}
+
+.a_MenoImageTitle {
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: block;
+    margin: 16px 0px 5px 0px;
+    font-size: larger;
+}
+
+.a_MenoImageParagraf {
+    display: block;
+    width: 100%;
+    white-space: normal;
+    font-size: 13px;
+    color: #7e7e7e;
+}
+
+@media (max-width: 2200px) {
+    .submenu {
+        width: 66%;
+    }
+    .DImage_Meno {
+        height: max-content;
+    }
+
+    .Image_Meno {
+        max-width: 450px;
+        margin-left: 0px;
+    }
+}
+@media (max-width: 1200px) {
+    .a_MenoImageTitle {
+        font-size: 15px;      
+    }
+}
+
+
+
+@media (max-width: 1700px) {
+    .submenu {
+        width: 66%;
+    }
+
+    .Image_Meno {
+        max-width: 450px;
+        margin-left: 0px;
+    }
+
+    .a_MenoImageTitle {
+        font-size: 16px;
+        margin: 16px -23px 5px 0px;
+    }
+}
+.hidden {
+    display: none !important;
+}
+@media (max-width: 1100px) {
+    .DImage_Meno {
+        display: none;
+    }
+
+    .submenu {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .DImage_Meno {
+        flex-direction: column;
+    }
+
+    .Image_Meno {
+        width: 100%;
+        max-width: 100%;
+        margin-left: 0;
+        margin-bottom: 15px;
+    }
+
+    .submenu {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+        padding: 15px;
+    }
+}
+
+.placeholder {
+    margin-right: 500px;
+}
+.MarkMenoMoblie {
+    font-size: 11px;
+    background: #bb0000;
+    color: wheat;
+    border-radius: 20px;
+    padding: 6px;
+}
+.SettingMarkMeno {
+    display: flex !important;
+    justify-content: space-between;
+}
+.MarkMeno {
+    font-size: 11px;
+    background: #bb0000;
+    color: wheat;
+    border-radius: 20px;
+    padding: 4px;
+}
+.a_NewsFast {
+    border: 0px solid black;
+    margin: 0px 20px 0px 16px;
+    padding: 17px !important;
+    border-radius: 29px;
+    background: #fdfdfd;
+    color: #989898;
+    box-shadow: 0px 0px 5px silver;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+}
+    .a_NewsFast:hover {
+        color: #000000 !important;
+    }
+    .image_MenoMobil {
+        border-radius: 13px;
+    }
+
+.description_MenoMobile {
+    font-size: 14px;
+}
+
+.D_MenoMobil {
+    text-align: center;
+    margin-top: 17px;
+}
+
+.paragraf_MenoMobile {
+    background: #ba1414;
+    color: aliceblue;
+    border-radius: 30px;
+    width: 101px;
+    text-align: center;
+    margin-bottom: 21px;
+}
+
+.closebtn {
+    position: absolute;
+    top: -23px !important;
+    right: 166px !important;
+    font-size: 36px;
+    margin-left: 52px !important;
+}
+
+

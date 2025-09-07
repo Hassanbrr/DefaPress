@@ -1,3 +1,5 @@
+using DefaPress.Domain;
+using DefaPress.Infrastructure.Seeds;
 using DefaPress.Presentation.Web.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,14 +22,16 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 app.MapRazorPages();
-app.UseAuthorization();
+app.UseAuthorization(); 
+
 
 app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "areas",
-    pattern: "{area=Admin}/{controller=Dashboard}/{action=Index}/{id?}"
+    pattern: "{area=Client}/{controller=Home}/{action=Index}/{id?}"
 );
 
 
 app.Run();
+

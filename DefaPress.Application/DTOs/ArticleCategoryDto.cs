@@ -6,7 +6,7 @@ namespace DefaPress.Application.DTOs
     public class ArticleCategoryDto
     {
         public int CategoryId { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public string? Slug { get; set; }
         public string? Description { get; set; }
         public int DisplayOrder { get; set; }
@@ -21,10 +21,11 @@ namespace DefaPress.Application.DTOs
 
     public class ArticleCategoryCreateDto
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public string? Slug { get; set; }
         public string? Description { get; set; }
         public int? ParentCategoryId { get; set; }
         public int DisplayOrder { get; set; } = 0;
     }
+     
 }

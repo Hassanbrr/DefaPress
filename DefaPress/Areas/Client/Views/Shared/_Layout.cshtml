@@ -1,54 +1,376 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@using Microsoft.AspNetCore.Identity
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - DefaPress</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/DefaPress.styles.css" asp-append-version="true" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خبرگزاری اتحاد | Pulse News</title>
+    <link rel="stylesheet" href="~/Client/Font/fontawesome-free-6.7.2-web/css/all.min.css" />
+    <link rel="stylesheet" href="~/Client/css/MainMode4.css" />
+    <link rel="stylesheet" href="~/Client/css/Animate.min.css" />
+    <link rel="stylesheet" href="~/Client/css/MenoSubset.css" />
+    <link rel="stylesheet" href="~/Client/css/Shared_menu.css" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">DefaPress</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-	                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <partial name="_LoginPartial"/>
-                        </li>
-                    </ul>
+
+
+    <div id="mySidenav" class="sidenav" style="width:0px;">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+
+        <div>
+            <a class="a_NewsFast" href="#">
+                <div>
+                    <p class="paragraf_MenoMobile">خبر فوری</p>
+                </div>
+                <div>
+                    <img class="image_MenoMobil" src="~/Client/images/image2.jpg" />
+                </div>
+                <div class="D_MenoMobil">
+                    <h4 class="TitleMenoMobile">صحبت ترامپ و زلنسکی</h4>
+                    <p class="description_MenoMobile">
+                        برای دریافت آخرین اخبار اینجا کلیک کنید
+                    </p>
+                </div>
+            </a>
+        </div>
+
+
+        <a class="nav-link NavSide SignCategory">دمو های اصلی<i class="fa fa-caret-down Icon_category_moblie"></i></a>
+        <div class="Nav_subset animate__animated animate__fadeInUp">
+            <a href="Mode1.html" class="nav-link NavSide">دموی اصلی 1</a>
+            <a href="Mode2.html" class="nav-link NavSide">دموی اصلی 2</a>
+            <a href="Mode3.html" class="nav-link NavSide">دموی اصلی 3</a>
+            <a href="Mode4.html" class="nav-link NavSide">دموی اصلی 4</a>
+        </div>
+
+        <a class="nav-link NavSide SignCategory">دمو های تک اخبار<i class="fa fa-caret-down Icon_category_moblie"></i></a>
+        <div class="Nav_subset animate__animated animate__fadeInUp">
+            <a href="SingleMode1.html" class="nav-link NavSide">دموی تک اخبار 1</a>
+            <a href="SingleMode2.html" class="nav-link NavSide">دموی تک اخبار 2</a>
+            <a href="SingleMode3.html" class="nav-link NavSide">دموی تک اخبار 3</a>
+            <a href="SingleMode4.html" class="nav-link NavSide">دموی تک اخبار 4</a>
+            <a href="SingleMode5.html" class="nav-link NavSide">دموی تک اخبار 5</a>
+        </div>
+        <a class="nav-link NavSide SignCategory">دسته ی اول<i class="fa fa-caret-down Icon_category_moblie"></i></a>
+        <div class="Nav_subset animate__animated animate__fadeInUp">
+            <a class="nav-link NavSide SettingMarkMeno">اقتصاد<span class="MarkMenoMoblie">اخبار جدید</span></a>
+            <a class="nav-link NavSide">ورزش</a>
+            <a class="nav-link NavSide">فرهنگ</a>
+            <a class="nav-link NavSide">اخبار جهان</a>
+            <a class="nav-link NavSide">اخبار حوادث</a>
+            <a class="nav-link NavSide">قیمت دلار</a>
+            <a class="nav-link NavSide">قیمت طلا</a>
+            <a class="nav-link NavSide">آب و هوا</a>
+
+        </div>
+
+        <a class="nav-link NavSide SignCategory">دمو های خطای 404<i class="fa fa-caret-down Icon_category_moblie"></i></a>
+        <div class="Nav_subset animate__animated animate__fadeInUp">
+            <a href="404Mode1.html" class="nav-link NavSide">دموی 404 نسخه 1</a>
+            <a href="404Mode2.html" class="nav-link NavSide">دموی 404 نسخه 2</a>
+            <a href="404Mode3.html" class="nav-link NavSide">دموی 404 نسخه 3</a>
+        </div>
+
+        <a class="nav-link NavSide SignCategory">دمو های ثبت نام<i class="fa fa-caret-down Icon_category_moblie"></i></a>
+        <div class="Nav_subset animate__animated animate__fadeInUp">
+            <a href="LoginMode1.html" class="nav-link NavSide">دموی ثبت نام نسخه 1</a>
+            <a href="LoginMode2.html" class="nav-link NavSide">دموی ثبت نام نسخه 2</a>
+        </div>
+
+        <a class="nav-link NavSide SignCategory">دمو های تماس با ما<i class="fa fa-caret-down Icon_category_moblie"></i></a>
+        <div class="Nav_subset animate__animated animate__fadeInUp">
+            <a href="ContactUsMode1.html" class="nav-link NavSide">دموی تماس با ما نسخه 1</a>
+            <a href="ContactUsMode2.html" class="nav-link NavSide">دموی تماس با ما نسخه 2</a>
+            <a href="ContactUsMode3.html" class="nav-link NavSide">دموی تماس با ما نسخه 3</a>
+        </div>
+    </div>
+    <!-- Header Top -->
+    <div class="header-top">
+        <div class="container">
+            <div class="header-top-content">
+                <div class="header-top-left">
+                    <div class="trending-label">
+                        <i class="fas fa-bolt"></i>
+                        <span>خبرهای داغ</span>
+                    </div>
+                    <div class="trending-news">
+                        <div class="trending-items">
+                            <div class="trending-item">افزایش قیمت دلار در بازار آزاد؛ جزئیات نرخ ارز امروز</div>
+                            <div class="trending-item">دیدار وزیر امور خارجه با سفرای کشورهای اروپایی</div>
+                            <div class="trending-item">آغاز ثبت‌نام کنکور سراسری ۱۴۰۳ از امروز</div>
+                            <div class="trending-item">پیروزی تیم ملی فوتبال در مقدماتی جام جهانی</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-top-right">
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <!-- Header Main -->
+    <header class="header">
         <div class="container">
-            &copy; 2025 - DefaPress - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="header-main-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h1 class="logo-text">خبرگزاری <span>ایران متحد</span></h1>
+                </div>
+                <div class="header-actions">
+                    <form class="search-form">
+                        <input type="text" class="search-input" placeholder="جستجو...">
+                        <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                    </form>
+              @if (User?.Identity?.IsAuthenticated == true)
+              {
+	              <span> سلام کاربر گرامی</span>
+	              <a asp-area="Identity" asp-page="/Account/Logout" class="btn btn-outline  btn-sm">خروج</a>
+
+              }
+              else{
+	              <div class="user-actions">
+		              <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline btn-sm">ورود</a>
+		              <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-primary btn-sm">ثبت‌نام</a>
+	              </div>
+              }
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Navigation -->
+
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-container">
+
+
+                <span class="sidebarMenoButton" style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
+                <button class="scroll_right btn_Dynamic" aria-label="اسکرول به راست">&#8249;</button>
+                <ul class="nav-menu nav_menud WidthDynamic">
+
+
+
+                    <li class="nav-item has_MegaMeno">
+                        <a class="nav-link">دمو های اصلی</a>
+                        <div class="DMegaSubmenu animate__animated animate__fadeIn">
+                            <ul class="MegaSubmenu">
+                                <li class="li_subsetMegaMeno"><a href="Mode1.html">دموی اصلی 1</a></li>
+                                <li class="li_subsetMegaMeno"><a href="Mode2.html">دموی اصلی 2</a></li>
+                                <li class="li_subsetMegaMeno"><a href="Mode3.html">دموی اصلی 3</a></li>
+                                <li class="li_subsetMegaMeno"><a href="Mode4.html">دموی اصلی 4</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+
+                    <li class="nav-item has_MegaMeno">
+                        <a class="nav-link">دمو های تک اخبار</a>
+                        <div class="DMegaSubmenu animate__animated animate__fadeIn">
+                            <ul class="MegaSubmenu">
+                                <li class="li_subsetMegaMeno"><a href="SingleMode1.html">دموی تک اخبار 1</a></li>
+                                <li class="li_subsetMegaMeno"><a href="SingleMode2.html">دموی تک اخبار 2</a></li>
+                                <li class="li_subsetMegaMeno"><a href="SingleMode3.html">دموی تک اخبار 3</a></li>
+                                <li class="li_subsetMegaMeno"><a href="SingleMode4.html">دموی تک اخبار 4</a></li>
+                                <li class="li_subsetMegaMeno"><a href="SingleMode5.html">دموی تک اخبار 5</a></li>
+
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item has-submenu" onclick="showSubmenu(item)">
+                        <a class="nav-link">دسته اول<i class="fa fa-caret-down Icon_category"></i></a>
+                        <div class="submenuOrginal">
+                            <div class="placeholder"></div>
+                            <div class="DImage_Meno">
+                                <div>
+                                    <img class="Image_Meno" src="~/Client/images/image1.jpg" />
+
+                                </div>
+                                <div class="Da_Meno">
+                                    <a class="a_MenoImageTitle">برنامه ی صبحانه ی ایرانی برنامه ای دلپذیر</a>
+                                    <a class="a_MenoImageParagraf">در این برنامه ی زیبای صبحگاهی صبح خودتان را با نشاط و روحیه ای جذاب آغاز کنید برای دریافت آخرین آخبار صبحانه ی ایرانی اینجا کلیک کنید</a>
+                                </div>
+                            </div>
+
+                            <ul class="submenu">
+                                <li class="li_subset"><a href="#" class="SettingMarkMeno">اقتصاد<span class="MarkMeno">اخبار جدید</span></a></li>
+                                <li class="li_subset"><a href="#">ورزش</a></li>
+                                <li class="li_subset"><a href="#">فرهنگ</a></li>
+                                <li class="li_subset"><a href="#">اخبار جهان</a></li>
+                                <li class="li_subset"><a href="#">اخبار حوادث</a></li>
+                                <li class="li_subset"><a href="#">مناسب ترین تور های مسافرتی</a></li>
+                                <li class="li_subset"><a href="#">لیست قیمت امروز آهن آلات</a></li>
+                                <li class="li_subset"><a href="#">قیمت سکه</a></li>
+                                <li class="li_subset"><a href="#">قیمت دلار</a></li>
+                                <li class="li_subset"><a href="#">قیمت طلا</a></li>
+                                <li class="li_subset"><a href="#">اخبار پزشکی و سلامت</a></li>
+                                <li class="li_subset"><a href="#">اخبار هنری</a></li>
+                                <li class="li_subset"><a href="#">اجاره ی خودرو سعادت رنت</a></li>
+                                <li class="li_subset"><a href="#">اخبار استخدامی</a></li>
+                                <li class="li_subset"><a href="#">خدمات بیمه</a></li>
+                                <li class="li_subset"><a href="#">اخبار تصویری</a></li>
+                                <li class="li_subset"><a href="#">اخبار ویدیویی</a></li>
+                                <li class="li_subset"><a href="#">اخبار خودرو</a></li>
+                                <li class="li_subset"><a href="#">بازار</a></li>
+                                <li class="li_subset"><a href="#">هوش مصنوعی</a></li>
+                                <li class="li_subset"><a href="#">دانش و فناوری</a></li>
+                                <li class="li_subset"><a href="#">اندیشه</a></li>
+                                <li class="li_subset"><a href="#">دین</a></li>
+                                <li class="li_subset"><a href="#">کافه خبر</a></li>
+                                <li class="li_subset"><a href="#">چند رسانه ای</a></li>
+                                <li class="li_subset"><a href="#">انتشارات</a></li>
+                                <li class="li_subset"><a href="#">وبلاگ</a></li>
+                                <li class="li_subset"><a href="#">استان ها</a></li>
+                                <li class="li_subset"><a href="#">شاخص آلودگی هوا</a></li>
+                                <li class="li_subset"><a href="#">آب و هوا</a></li>
+                                <li class="li_subset"><a href="#">اوقات شرعی</a></li>
+                                <li class="li_subset"><a href="#">پیوند ها</a></li>
+
+
+
+                            </ul>
+
+                        </div>
+                    </li>
+                    <li class="nav-item has_MegaMeno">
+                        <a class="nav-link">دمو های خطای 404</a>
+                        <div class="DMegaSubmenu animate__animated animate__fadeIn">
+                            <ul class="MegaSubmenu">
+                                <li class="li_subsetMegaMeno"><a href="404Mode1.html">دموی 404 نسخه 1</a></li>
+                                <li class="li_subsetMegaMeno"><a href="404Mode2.html">دموی 404 نسخه 2</a></li>
+                                <li class="li_subsetMegaMeno"><a href="404Mode3.html">دموی 404 نسخه 3</a></li>
+
+
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item has_MegaMeno">
+                        <a class="nav-link">دمو های ورود و ثبت نام</a>
+                        <div class="DMegaSubmenu animate__animated animate__fadeIn">
+                            <ul class="MegaSubmenu">
+                                <li class="li_subsetMegaMeno"><a href="LoginMode1.html">دموی ورود و ثبت نام نسخه 1</a></li>
+                                <li class="li_subsetMegaMeno"><a href="LoginMode2.html">دموی ورود و ثبت نام نسخه 2</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item has_MegaMeno">
+                        <a class="nav-link">دمو های تماس با ما</a>
+                        <div class="DMegaSubmenu animate__animated animate__fadeIn">
+                            <ul class="MegaSubmenu">
+                                <li class="li_subsetMegaMeno"><a href="ContactUsMode1.html">دموی تماس با ما نسخه 1</a></li>
+                                <li class="li_subsetMegaMeno"><a href="ContactUsMode2.html">دموی تماس با ما نسخه 2</a></li>
+                                <li class="li_subsetMegaMeno"><a href="ContactUsMode3.html">دموی تماس با ما نسخه 3</a></li>
+
+                            </ul>
+                        </div>
+                    </li>
+
+
+
+                </ul>
+                <button class="scroll_left btn_Dynamic" aria-label="اسکرول به چپ">&#8250;</button>
+
+            </div>
+        </div>
+    </nav>
+
+    @RenderBody()
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-widgets">
+                <div class="footer-widget">
+                    <h3 class="footer-widget-title">درباره ما</h3>
+                    <p class="footer-about">
+                        خبرگزاری اتفاق، پیشرو در ارائه اخبار دقیق و به‌روز از ایران و جهان. هدف ما اطلاع‌رسانی صحیح و سریع به مخاطبان است.
+                    </p>
+                    <div class="footer-social">
+                        <a href="#" class="footer-social-link"><i class="fab fa-telegram"></i></a>
+                        <a href="#" class="footer-social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="footer-social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="footer-social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-widget">
+                    <h3 class="footer-widget-title">دسترسی سریع</h3>
+                    <ul class="footer-links">
+                        <li><a href="#" class="footer-link"><i class="fas fa-angle-left"></i> صفحه اصلی</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-angle-left"></i> اخبار سیاسی</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-angle-left"></i> اخبار اقتصادی</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-angle-left"></i> اخبار ورزشی</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-angle-left"></i> اخبار فرهنگی</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-angle-left"></i> اخبار بین‌الملل</a></li>
+                    </ul>
+                </div>
+                <div class="footer-widget">
+                    <h3 class="footer-widget-title">خدمات ما</h3>
+                    <ul class="footer-links">
+                        <li><a href="#" class="footer-link"><i class="fas fa-angle-left"></i> درباره ما</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-angle-left"></i> تماس با ما</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-angle-left"></i> همکاری با ما</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-angle-left"></i> تبلیغات</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-angle-left"></i> حریم خصوصی</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-angle-left"></i> قوانین سایت</a></li>
+                    </ul>
+                </div>
+                <div class="footer-widget">
+                    <h3 class="footer-widget-title">آخرین مطالب</h3>
+                    <div class="footer-posts">
+                        <article class="footer-post">
+                            <div class="footer-post-image">
+                                <img src="~/Client/images/image2.jpg" alt="خبر">
+                            </div>
+                            <div class="footer-post-content">
+                                <h4 class="footer-post-title">
+                                    <a href="#">افزایش قیمت طلا و سکه در بازار امروز</a>
+                                </h4>
+                                <div class="footer-post-date">۳ ساعت پیش</div>
+                            </div>
+                        </article>
+                        <article class="footer-post">
+                            <div class="footer-post-image">
+                                <img src="~/Client/images/image4.jpg" alt="خبر">
+                            </div>
+                            <div class="footer-post-content">
+                                <h4 class="footer-post-title">
+                                    <a href="#">دیدار وزیر امور خارجه با سفرای کشورهای اروپایی</a>
+                                </h4>
+                                <div class="footer-post-date">۴ ساعت پیش</div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>تمامی حقوق این سایت متعلق به خبرگزاری اتفاق می‌باشد. &copy; ۱۴۰۴</p>
+            </div>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
 
+    <!-- Back to Top Button -->
+    <div class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    <script src="~/Client/js/Shared_menu.js"></script>
+    <script src="~/Client/js/MainMode4.js"></script>
+    <script src="~/Client/js/ScrollerMeno.js"></script>
+    <script src="~/Client/js/MenoSubset.js"></script>
+    <script src="~/Client/js/buttonDynamic.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

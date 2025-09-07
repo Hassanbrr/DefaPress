@@ -1,6 +1,9 @@
 ﻿using DefaPress.Application.Interfaces;
 using DefaPress.Application.Profiles;
 using DefaPress.Application.Services;
+using DefaPress.Application.Validators;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -13,7 +16,10 @@ namespace DefaPress.Application.Base
         {
             services.AddScoped<IArticleCategoryService, ArticleCategoryService>();
 
-          
+            services.AddFluentValidationAutoValidation();
+            services.AddFluentValidationClientsideAdapters();
+            services.AddValidatorsFromAssemblyContaining<ArticleCategoryCreateDtoValidator>();
+
 
         }
     }

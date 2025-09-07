@@ -7,7 +7,8 @@ using AutoMapper;
 using DefaPress.Application.DTOs;
 using DefaPress.Application.Interfaces;
 using DefaPress.Domain;
-using DefaPress.Infrastructure.Modules.Base.Interfaces; // for IUnitOffWork or adjust namespace
+using DefaPress.Infrastructure.Modules.Base.Interfaces;
+using Helps; // for IUnitOffWork or adjust namespace
 // adjust namespaces above to match پروژهٔ شما
 
 namespace DefaPress.Application.Services
@@ -124,6 +125,7 @@ namespace DefaPress.Application.Services
                 entity.DisplayOrder = all.Any() ? all.Max(x => x.DisplayOrder) + 1 : 1;
             }
 
+            entity.Slug = SlugHelper.SlugifyPersian(entity.Name);
             await _uow.ArticleCategoryRepository.AddAsync(entity, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 

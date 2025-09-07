@@ -1,0 +1,51 @@
+﻿@model ArticleCategoryCreateDto
+
+<div class="modal-header">
+	<h5 class="modal-title">
+		@(ViewBag.CategoryId == null ? "افزودن دسته جدید" : "ویرایش دسته")
+	</h5>
+
+	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+</div>
+<div class="modal-body">
+	<form id="CategoryForm" asp-action="Upsert" asp-controller="ArticleCategoryAdmin" asp-area="Admin" method="post">
+
+		<div class="mb-3">
+			<label asp-for="Name" class="form-label"></label>
+			<input asp-for="Name" class="form-control" />
+			<span asp-validation-for="Name" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<label asp-for="DisplayOrder" class="form-label"></label>
+			<input asp-for="DisplayOrder" class="form-control" />
+			<span asp-validation-for="DisplayOrder" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<label asp-for="Slug" class="form-label"></label>
+			<input asp-for="Slug" class="form-control" />
+			<span asp-validation-for="Slug" class="text-danger"></span>
+		</div>
+
+		<div class="mb-3">
+			<label asp-for="Description" class="form-label"></label>
+			<textarea asp-for="Description" class="form-control" rows="3"></textarea>
+			<span asp-validation-for="Description" class="text-danger"></span>
+		</div>
+
+		<!-- لیست کشویی انتخاب دسته والد -->
+		<div class="mb-3">
+			<label asp-for="ParentCategoryId" class="form-label">دسته والد</label>
+			<select asp-for="ParentCategoryId" class="form-control" asp-items="ViewBag.ParentCategories">
+				<option value="">انتخاب کنید</option>
+			</select>
+			<span asp-validation-for="ParentCategoryId" class="text-danger"></span>
+		</div>
+
+
+		<button type="submit" class="btn btn-primary">ذخیره</button>
+	</form>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}

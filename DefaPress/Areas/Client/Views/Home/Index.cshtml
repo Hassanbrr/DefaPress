@@ -1,8 +1,721 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿   <!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-grid">
+            <div class="main-slider">
+                <div class="slider-container">
+                    <div class="slide active">
+                        <img src="~/Client/images/president.jpg" alt="اسلاید ۱" class="slide-image">
+                        <div class="slide-overlay"></div>
+                        <div class="slide-content">
+                            <div class="slide-category">سیاسی</div>
+                            <h2 class="slide-title">دیدار رئیس جمهور با نمایندگان مجلس برای بررسی مسائل اقتصادی</h2>
+                            <p class="slide-excerpt">رئیس جمهور در دیدار با نمایندگان مجلس، راهکارهای بهبود وضعیت اقتصادی کشور را مورد بررسی قرار داد.</p>
+                            <div class="slide-meta">
+                                <div class="meta-item">
+                                    <i class="far fa-clock"></i>
+                                    <span>۲ ساعت پیش</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="far fa-eye"></i>
+                                    <span>۱,۲۳۴ بازدید</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <img src="~/Client/images/president2.jpg" alt="اسلاید ۲" class="slide-image">
+                        <div class="slide-overlay"></div>
+                        <div class="slide-content">
+                            <div class="slide-category">اقتصادی</div>
+                            <h2 class="slide-title">افزایش قیمت ارز در بازار آزاد؛ دلایل و پیامدها</h2>
+                            <p class="slide-excerpt">کارشناسان اقتصادی دلایل افزایش قیمت ارز در روزهای اخیر و تأثیر آن بر بازارهای مختلف را تشریح کردند.</p>
+                            <div class="slide-meta">
+                                <div class="meta-item">
+                                    <i class="far fa-clock"></i>
+                                    <span>۳ ساعت پیش</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="far fa-eye"></i>
+                                    <span>۹۸۷ بازدید</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <img src="~/Client/images/image1.jpg" alt="اسلاید ۳" class="slide-image">
+                        <div class="slide-overlay"></div>
+                        <div class="slide-content">
+                            <div class="slide-category">ورزشی</div>
+                            <h2 class="slide-title">پیروزی تیم ملی فوتبال در مقدماتی جام جهانی</h2>
+                            <p class="slide-excerpt">تیم ملی فوتبال ایران با نتیجه ۲ بر صفر مقابل حریف خود به پیروزی رسید و صدرنشین گروه خود شد.</p>
+                            <div class="slide-meta">
+                                <div class="meta-item">
+                                    <i class="far fa-clock"></i>
+                                    <span>۵ ساعت پیش</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="far fa-eye"></i>
+                                    <span>۱,۵۶۷ بازدید</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slider-controls">
+                    <div class="slider-dots">
+                        <span class="slider-dot active" data-index="0"></span>
+                        <span class="slider-dot" data-index="1"></span>
+                        <span class="slider-dot" data-index="2"></span>
+                    </div>
+                    <div class="slider-arrows">
+                        <button class="slider-arrow slider-prev"><i class="fas fa-chevron-right"></i></button>
+                        <button class="slider-arrow slider-next"><i class="fas fa-chevron-left"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="side-news">
+                <div class="side-card">
+                    <div class="side-card-image">
+                        <img src="~/Client/images/image2.jpg" alt="خبر">
+                    </div>
+                    <div class="side-card-overlay"></div>
+                    <div class="side-card-content">
+                        <div class="side-card-category">فناوری</div>
+                        <h3 class="side-card-title">رونمایی از نسل جدید گوشی‌های هوشمند با قابلیت‌های پیشرفته</h3>
+                        <div class="side-card-meta">
+                            <i class="far fa-clock"></i>
+                            <span>۴ ساعت پیش</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="side-card">
+                    <div class="side-card-image">
+                        <img src="~/Client/images/image3.jpg" alt="خبر">
+                    </div>
+                    <div class="side-card-overlay"></div>
+                    <div class="side-card-content">
+                        <div class="side-card-category">بین‌الملل</div>
+                        <h3 class="side-card-title">نشست سران کشورهای منطقه برای بررسی تحولات اخیر</h3>
+                        <div class="side-card-meta">
+                            <i class="far fa-clock"></i>
+                            <span>۶ ساعت پیش</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <div class="features-grid">
+            <!-- Weather Widget -->
+            <div class="feature-card">
+                <div class="feature-header">
+                    <i class="fas fa-cloud-sun"></i>
+                    <span>آب و هوا</span>
+                </div>
+                <div class="feature-content">
+                    <div class="weather-widget">
+                        <div class="weather-icon">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                        <div class="weather-temp">۲۴°</div>
+                        <div class="weather-desc">آفتابی</div>
+                        <div class="weather-city">تهران</div>
+                        <div class="weather-details">
+                            <div class="weather-detail">
+                                <div class="weather-detail-icon">
+                                    <i class="fas fa-wind"></i>
+                                </div>
+                                <div class="weather-detail-value">۱۰ کیلومتر</div>
+                                <div class="weather-detail-label">سرعت باد</div>
+                            </div>
+                            <div class="weather-detail">
+                                <div class="weather-detail-icon">
+                                    <i class="fas fa-tint"></i>
+                                </div>
+                                <div class="weather-detail-value">۲۵٪</div>
+                                <div class="weather-detail-label">رطوبت</div>
+                            </div>
+                            <div class="weather-detail">
+                                <div class="weather-detail-icon">
+                                    <i class="fas fa-temperature-low"></i>
+                                </div>
+                                <div class="weather-detail-value">۱۸°</div>
+                                <div class="weather-detail-label">حداقل دما</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Currency Widget -->
+            <div class="feature-card">
+                <div class="feature-header">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>نرخ ارز</span>
+                </div>
+                <div class="feature-content">
+                    <div class="currency-list">
+                        <div class="currency-item">
+                            <div class="currency-name">
+                                <div class="currency-icon">$</div>
+                                <span>دلار آمریکا</span>
+                            </div>
+                            <div class="currency-value">۵۲,۴۵۰ تومان</div>
+                            <div class="currency-change currency-up">
+                                <i class="fas fa-caret-up"></i>
+                                <span>۱.۲٪</span>
+                            </div>
+                        </div>
+                        <div class="currency-item">
+                            <div class="currency-name">
+                                <div class="currency-icon">€</div>
+                                <span>یورو</span>
+                            </div>
+                            <div class="currency-value">۵۷,۸۲۰ تومان</div>
+                            <div class="currency-change currency-up">
+                                <i class="fas fa-caret-up"></i>
+                                <span>۰.۸٪</span>
+                            </div>
+                        </div>
+                        <div class="currency-item">
+                            <div class="currency-name">
+                                <div class="currency-icon">£</div>
+                                <span>پوند انگلیس</span>
+                            </div>
+                            <div class="currency-value">۶۷,۱۵۰ تومان</div>
+                            <div class="currency-change currency-down">
+                                <i class="fas fa-caret-down"></i>
+                                <span>۰.۳٪</span>
+                            </div>
+                        </div>
+                        <div class="currency-item">
+                            <div class="currency-name">
+                                <div class="currency-icon">¥</div>
+                                <span>ین ژاپن</span>
+                            </div>
+                            <div class="currency-value">۳۵۰ تومان</div>
+                            <div class="currency-change currency-up">
+                                <i class="fas fa-caret-up"></i>
+                                <span>۰.۵٪</span>
+                            </div>
+                        </div>
+                        <div class="currency-item">
+                            <div class="currency-name">
+                                <div class="currency-icon">₿</div>
+                                <span>بیت کوین</span>
+                            </div>
+                            <div class="currency-value">۱,۸۵۰,۰۰۰,۰۰۰ تومان</div>
+                            <div class="currency-change currency-up">
+                                <i class="fas fa-caret-up"></i>
+                                <span>۲.۵٪</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Poll Widget -->
+            <div class="feature-card">
+                <div class="feature-header">
+                    <i class="fas fa-poll"></i>
+                    <span>نظرسنجی</span>
+                </div>
+                <div class="feature-content">
+                    <div class="poll-question">
+                        مهمترین مشکل اقتصادی کشور از نظر شما چیست؟
+                    </div>
+                    <div class="poll-options">
+                        <div class="poll-option">
+                            <div class="poll-radio"></div>
+                            <div class="poll-label">تورم و گرانی</div>
+                        </div>
+                        <div class="poll-option">
+                            <div class="poll-radio"></div>
+                            <div class="poll-label">بیکاری</div>
+                        </div>
+                        <div class="poll-option">
+                            <div class="poll-radio"></div>
+                            <div class="poll-label">رکود اقتصادی</div>
+                        </div>
+                        <div class="poll-option">
+                            <div class="poll-radio"></div>
+                            <div class="poll-label">نوسانات نرخ ارز</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary poll-submit">ثبت نظر</button>
+                    <div class="poll-results">
+                        <div class="poll-result">
+                            <div class="poll-result-header">
+                                <div class="poll-result-label">تورم و گرانی</div>
+                                <div class="poll-result-value">۴۵٪</div>
+                            </div>
+                            <div class="poll-result-bar">
+                                <div class="poll-result-progress" style="width: 45%"></div>
+                            </div>
+                        </div>
+                        <div class="poll-result">
+                            <div class="poll-result-header">
+                                <div class="poll-result-label">بیکاری</div>
+                                <div class="poll-result-value">۲۸٪</div>
+                            </div>
+                            <div class="poll-result-bar">
+                                <div class="poll-result-progress" style="width: 28%"></div>
+                            </div>
+                        </div>
+                        <div class="poll-result">
+                            <div class="poll-result-header">
+                                <div class="poll-result-label">رکود اقتصادی</div>
+                                <div class="poll-result-value">۱۵٪</div>
+                            </div>
+                            <div class="poll-result-bar">
+                                <div class="poll-result-progress" style="width: 15%"></div>
+                            </div>
+                        </div>
+                        <div class="poll-result">
+                            <div class="poll-result-header">
+                                <div class="poll-result-label">نوسانات نرخ ارز</div>
+                                <div class="poll-result-value">۱۲٪</div>
+                            </div>
+                            <div class="poll-result-bar">
+                                <div class="poll-result-progress" style="width: 12%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- News Grid Section -->
+<section class="news-grid-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">آخرین اخبار</h2>
+            <a href="#" class="view-all">مشاهده همه <i class="fas fa-angle-left"></i></a>
+        </div>
+        <div class="news-grid">
+            <article class="news-card">
+                <div class="news-card-image">
+                    <img src="~/Client/images/image5.jpg" alt="خبر">
+                    <div class="news-card-category">اجتماعی</div>
+                </div>
+                <div class="news-card-content">
+                    <h3 class="news-card-title">
+                        <a href="#">آغاز طرح واکسیناسیون رایگان در سراسر کشور</a>
+                    </h3>
+                    <p class="news-card-excerpt">وزارت بهداشت از آغاز طرح واکسیناسیون رایگان در سراسر کشور خبر داد. این طرح از هفته آینده در تمامی مراکز بهداشتی اجرا خواهد شد.</p>
+                    <div class="news-card-meta">
+                        <div class="news-card-date">
+                            <i class="far fa-clock"></i>
+                            <span>۱ ساعت پیش</span>
+                        </div>
+                        <div class="news-card-comments">
+                            <i class="far fa-comment"></i>
+                            <span>۱۲ نظر</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            <article class="news-card">
+                <div class="news-card-image">
+                    <img src="~/Client/images/image6.jpg" alt="خبر">
+                    <div class="news-card-category">فرهنگی</div>
+                </div>
+                <div class="news-card-content">
+                    <h3 class="news-card-title">
+                        <a href="#">برگزاری جشنواره فیلم فجر با حضور هنرمندان داخلی و خارجی</a>
+                    </h3>
+                    <p class="news-card-excerpt">چهل و دومین جشنواره فیلم فجر با حضور هنرمندان داخلی و خارجی در تهران آغاز به کار کرد. این جشنواره به مدت ده روز ادامه خواهد داشت.</p>
+                    <div class="news-card-meta">
+                        <div class="news-card-date">
+                            <i class="far fa-clock"></i>
+                            <span>۴ ساعت پیش</span>
+                        </div>
+                        <div class="news-card-comments">
+                            <i class="far fa-comment"></i>
+                            <span>۸ نظر</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            <article class="news-card">
+                <div class="news-card-image">
+                    <img src="~/Client/images/image7.jpg" alt="خبر">
+                    <div class="news-card-category">ورزشی</div>
+                </div>
+                <div class="news-card-content">
+                    <h3 class="news-card-title">
+                        <a href="#">قهرمانی تیم ملی کشتی در مسابقات جهانی</a>
+                    </h3>
+                    <p class="news-card-excerpt">تیم ملی کشتی ایران با کسب ۵ مدال طلا، ۳ نقره و ۲ برنز به مقام قهرمانی مسابقات جهانی دست یافت.</p>
+                    <div class="news-card-meta">
+                        <div class="news-card-date">
+                            <i class="far fa-clock"></i>
+                            <span>۵ ساعت پیش</span>
+                        </div>
+                        <div class="news-card-comments">
+                            <i class="far fa-comment"></i>
+                            <span>۲۴ نظر</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Categories Section -->
+<section class="featured-categories">
+    <div class="container">
+        <div class="category-tabs">
+            <div class="category-tab active" data-tab="politics">سیاسی</div>
+            <div class="category-tab" data-tab="economy">اقتصادی</div>
+            <div class="category-tab" data-tab="social">اجتماعی</div>
+            <div class="category-tab" data-tab="culture">فرهنگی</div>
+            <div class="category-tab" data-tab="sports">ورزشی</div>
+        </div>
+        <div class="category-content active" id="politics">
+            <div class="category-grid">
+                <div class="category-main">
+                    <article class="category-main-card">
+                        <div class="category-main-image">
+                            <img src="~/Client/images/image8.jpg" alt="خبر سیاسی">
+                        </div>
+                        <div class="category-main-content">
+                            <h3 class="category-main-title">
+                                <a href="#">سخنرانی رئیس جمهور در مراسم افتتاح پروژه‌های عمرانی</a>
+                            </h3>
+                            <p class="category-main-excerpt">رئیس جمهور در مراسم افتتاح چندین پروژه عمرانی بر اهمیت توسعه زیرساخت‌های کشور تأکید کرد و از برنامه‌های دولت برای تسریع در اجرای طرح‌های عمرانی خبر داد.</p>
+                            <div class="category-main-meta">
+                                <div class="meta-item">
+                                    <i class="far fa-clock"></i>
+                                    <span>۲ ساعت پیش</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="far fa-eye"></i>
+                                    <span>۸۵۶ بازدید</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="category-card">
+                        <div class="category-card-image">
+                            <img src="~/Client/images/image9.jpg" alt="خبر سیاسی">
+                        </div>
+                        <div class="category-card-content">
+                            <h3 class="category-card-title">
+                                <a href="#">دیدار وزیر امور خارجه با سفرای کشورهای اروپایی</a>
+                            </h3>
+                            <div class="category-card-meta">
+                                <i class="far fa-clock"></i>
+                                <span>۴ ساعت پیش</span>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="category-card">
+                        <div class="category-card-image">
+                            <img src="~/Client/images/image10.jpg" alt="خبر سیاسی">
+                        </div>
+                        <div class="category-card-content">
+                            <h3 class="category-card-title">
+                                <a href="#">جلسه فوق‌العاده کمیسیون امنیت ملی مجلس</a>
+                            </h3>
+                            <div class="category-card-meta">
+                                <i class="far fa-clock"></i>
+                                <span>۶ ساعت پیش</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="category-list">
+                    <article class="category-list-item">
+                        <div class="category-list-image">
+                            <img src="~/Client/images/image11.jpg" alt="خبر">
+                        </div>
+                        <div class="category-list-content">
+                            <h3 class="category-list-title">
+                                <a href="#">واکنش سخنگوی دولت به اظهارات اخیر مقامات خارجی</a>
+                            </h3>
+                            <div class="category-list-meta">
+                                <i class="far fa-clock"></i>
+                                <span>۸ ساعت پیش</span>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="category-list-item">
+                        <div class="category-list-image">
+                            <img src="~/Client/images/image12.jpg" alt="خبر">
+                        </div>
+                        <div class="category-list-content">
+                            <h3 class="category-list-title">
+                                <a href="#">بررسی طرح جدید مجلس در کمیسیون‌های تخصصی</a>
+                            </h3>
+                            <div class="category-list-meta">
+                                <i class="far fa-clock"></i>
+                                <span>۱۰ ساعت پیش</span>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="category-list-item">
+                        <div class="category-list-image">
+                            <img src="~/Client/images/image13.jpg" alt="خبر">
+                        </div>
+                        <div class="category-list-content">
+                            <h3 class="category-list-title">
+                                <a href="#">تأکید رهبر انقلاب بر حمایت از تولید داخلی</a>
+                            </h3>
+                            <div class="category-list-meta">
+                                <i class="far fa-clock"></i>
+                                <span>۱۲ ساعت پیش</span>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="category-list-item">
+                        <div class="category-list-image">
+                            <img src="~/Client/images/image14.jpg" alt="خبر">
+                        </div>
+                        <div class="category-list-content">
+                            <h3 class="category-list-title">
+                                <a href="#">انتصاب استانداران جدید در سه استان کشور</a>
+                            </h3>
+                            <div class="category-list-meta">
+                                <i class="far fa-clock"></i>
+                                <span>۱۴ ساعت پیش</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+        <div class="category-content" id="economy">
+            <div class="category-grid">
+                <div class="category-main">
+                    <article class="category-main-card">
+                        <div class="category-main-image">
+                            <img src="~/Client/images/image1.jpg" alt="خبر سیاسی">
+                        </div>
+                        <div class="category-main-content">
+                            <h3 class="category-main-title">
+                                <a href="#">سخنرانی رئیس جمهور در مراسم افتتاح پروژه‌های عمرانی</a>
+                            </h3>
+                            <p class="category-main-excerpt">رئیس جمهور در مراسم افتتاح چندین پروژه عمرانی بر اهمیت توسعه زیرساخت‌های کشور تأکید کرد و از برنامه‌های دولت برای تسریع در اجرای طرح‌های عمرانی خبر داد.</p>
+                            <div class="category-main-meta">
+                                <div class="meta-item">
+                                    <i class="far fa-clock"></i>
+                                    <span>۲ ساعت پیش</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="far fa-eye"></i>
+                                    <span>۸۵۶ بازدید</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="category-card">
+                        <div class="category-card-image">
+                            <img src="~/Client/images/image2.jpg" alt="خبر سیاسی">
+                        </div>
+                        <div class="category-card-content">
+                            <h3 class="category-card-title">
+                                <a href="#">دیدار وزیر امور خارجه با سفرای کشورهای اروپایی</a>
+                            </h3>
+                            <div class="category-card-meta">
+                                <i class="far fa-clock"></i>
+                                <span>۴ ساعت پیش</span>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="category-card">
+                        <div class="category-card-image">
+                            <img src="~/Client/images/image3.jpg" alt="خبر سیاسی">
+                        </div>
+                        <div class="category-card-content">
+                            <h3 class="category-card-title">
+                                <a href="#">جلسه فوق‌العاده کمیسیون امنیت ملی مجلس</a>
+                            </h3>
+                            <div class="category-card-meta">
+                                <i class="far fa-clock"></i>
+                                <span>۶ ساعت پیش</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="category-list">
+                    <article class="category-list-item">
+                        <div class="category-list-image">
+                            <img src="~/Client/images/image4.jpg" alt="خبر">
+                        </div>
+                        <div class="category-list-content">
+                            <h3 class="category-list-title">
+                                <a href="#">واکنش سخنگوی دولت به اظهارات اخیر مقامات خارجی</a>
+                            </h3>
+                            <div class="category-list-meta">
+                                <i class="far fa-clock"></i>
+                                <span>۸ ساعت پیش</span>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="category-list-item">
+                        <div class="category-list-image">
+                            <img src="~/Client/images/image5.jpg" alt="خبر">
+                        </div>
+                        <div class="category-list-content">
+                            <h3 class="category-list-title">
+                                <a href="#">بررسی طرح جدید مجلس در کمیسیون‌های تخصصی</a>
+                            </h3>
+                            <div class="category-list-meta">
+                                <i class="far fa-clock"></i>
+                                <span>۱۰ ساعت پیش</span>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="category-list-item">
+                        <div class="category-list-image">
+                            <img src="~/Client/images/image6.jpg" alt="خبر">
+                        </div>
+                        <div class="category-list-content">
+                            <h3 class="category-list-title">
+                                <a href="#">تأکید رهبر انقلاب بر حمایت از تولید داخلی</a>
+                            </h3>
+                            <div class="category-list-meta">
+                                <i class="far fa-clock"></i>
+                                <span>۱۲ ساعت پیش</span>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="category-list-item">
+                        <div class="category-list-image">
+                            <img src="~/Client/images/image7.jpg" alt="خبر">
+                        </div>
+                        <div class="category-list-content">
+                            <h3 class="category-list-title">
+                                <a href="#">انتصاب استانداران جدید در سه استان کشور</a>
+                            </h3>
+                            <div class="category-list-meta">
+                                <i class="far fa-clock"></i>
+                                <span>۱۴ ساعت پیش</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+        <div class="category-content" id="social">
+            <!-- Social tab content will be loaded via JavaScript -->
+        </div>
+        <div class="category-content" id="culture">
+            <!-- Culture tab content will be loaded via JavaScript -->
+        </div>
+        <div class="category-content" id="sports">
+            <!-- Sports tab content will be loaded via JavaScript -->
+        </div>
+    </div>
+</section>
+
+<!-- Video Section -->
+<section class="video-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">ویدیوهای برگزیده</h2>
+            <a href="#" class="view-all">مشاهده همه <i class="fas fa-angle-left"></i></a>
+        </div>
+        <div class="video-grid">
+            <div class="main-video">
+                <div class="video-thumbnail">
+                    <img src="~/Client/images/image15.jpg" alt="ویدیو">
+                    <div class="video-overlay"></div>
+                    <div class="play-button">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="video-duration">۰۵:۲۱</div>
+                </div>
+                <div class="video-content">
+                    <h3 class="video-title">گزارش ویژه: چالش‌های اقتصادی پیش روی دولت در سال جدید</h3>
+                    <div class="video-meta">
+                        <div class="meta-item">
+                            <i class="far fa-clock"></i>
+                            <span>۲ ساعت پیش</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="far fa-eye"></i>
+                            <span>۲۵۶ بازدید</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="video-list">
+                <div class="video-item">
+                    <div class="video-item-thumbnail">
+                        <img src="~/Client/images/image16.jpg" alt="ویدیو">
+                        <div class="video-item-play">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="video-item-duration">۰۳:۴۵</div>
+                    </div>
+                    <div class="video-item-content">
+                        <h4 class="video-item-title">مصاحبه با قهرمانان کشتی پس از بازگشت از مسابقات جهانی</h4>
+                        <div class="video-item-meta">
+                            <i class="far fa-clock"></i>
+                            <span>۴ ساعت پیش</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-item">
+                    <div class="video-item-thumbnail">
+                        <img src="~/Client/images/image17.jpg" alt="ویدیو">
+                        <div class="video-item-play">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="video-item-duration">۰۲:۳۰</div>
+                    </div>
+                    <div class="video-item-content">
+                        <h4 class="video-item-title">گزارش میدانی از وضعیت بازار ارز در هفته گذشته</h4>
+                        <div class="video-item-meta">
+                            <i class="far fa-clock"></i>
+                            <span>۶ ساعت پیش</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-item">
+                    <div class="video-item-thumbnail">
+                        <img src="~/Client/images/image18.jpg" alt="ویدیو">
+                        <div class="video-item-play">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="video-item-duration">۰۴:۱۵</div>
+                    </div>
+                    <div class="video-item-content">
+                        <h4 class="video-item-title">بررسی آخرین تحولات منطقه در گفتگو با کارشناسان</h4>
+                        <div class="video-item-meta">
+                            <i class="far fa-clock"></i>
+                            <span>۸ ساعت پیش</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-item">
+                    <div class="video-item-thumbnail">
+                        <img src="~/Client/images/image19.jpg" alt="ویدیو">
+                        <div class="video-item-play">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="video-item-duration">۰۶:۲۰</div>
+                    </div>
+                    <div class="video-item-content">
+                        <h4 class="video-item-title">مستند ویژه: دستاوردهای علمی ایران در سال گذشته</h4>
+                        <div class="video-item-meta">
+                            <i class="far fa-clock"></i>
+                            <span>۱۰ ساعت پیش</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
