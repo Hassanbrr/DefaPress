@@ -1,0 +1,755 @@
+﻿@model DefaPress.Application.DTOs.ArticleUpdateDto
+<style>
+    /* استایل‌های پایه برای فرم نئونی */
+    .neon-form.advanced {
+        background: rgba(0, 10, 20, 0.8);
+        border-radius: 15px;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .neon-header {
+        position: relative;
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        border-radius: 10px;
+        background: rgba(0, 20, 40, 0.6);
+        border: 1px solid rgba(0, 247, 255, 0.2);
+    }
+
+    .neon-glow {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+    }
+
+    .neon-title {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #88ffff;
+        -webkit-background-clip: text;
+        background-clip: text;
+        margin-bottom: 10px;
+    }
+
+    .neon-subtitle {
+        color: #88ffff;
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+
+    .neon-card {
+        background: rgba(0, 20, 40, 0.6);
+        border: 1px solid rgba(0, 247, 255, 0.3);
+        border-radius: 12px;
+        padding: 0;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+        .neon-card:hover {
+            border-color: rgba(0, 247, 255, 0.6);
+            box-shadow: 0 6px 20px rgba(0, 247, 255, 0.2);
+        }
+
+        .neon-card.compact {
+            margin-bottom: 15px;
+        }
+
+    .neon-card-header {
+        background: rgba(0, 30, 60, 0.8);
+        padding: 15px 20px;
+        border-bottom: 1px solid rgba(0, 247, 255, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: bold;
+        color: #00f7ff;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .neon-icon {
+        color: #00f7ff;
+        font-size: 1.1rem;
+    }
+
+    .neon-card-body {
+        padding: 20px;
+    }
+
+    .neon-input-group {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .neon-label {
+        display: block;
+        color: #00f7ff;
+        font-weight: bold;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+    }
+
+    .neon-input, .neon-textarea, .neon-select {
+        width: 100%;
+        background: rgba(0, 30, 60, 0.8);
+        border: 1px solid rgba(0, 247, 255, 0.3);
+        border-radius: 8px;
+        padding: 12px 15px;
+        color: #ffffff;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        font-family: inherit;
+    }
+
+        .neon-textarea.large {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        .neon-input:focus, .neon-textarea:focus, .neon-select:focus {
+            outline: none;
+            border-color: #00f7ff;
+            box-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
+            background: rgba(0, 40, 80, 0.8);
+        }
+
+    .neon-focus-border {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background: #00f7ff;
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+    }
+
+    .neon-input:focus ~ .neon-focus-border,
+    .neon-textarea:focus ~ .neon-focus-border {
+        width: 100%;
+    }
+
+    .neon-error {
+        color: #ff4444;
+        font-size: 0.8rem;
+        margin-top: 5px;
+        display: block;
+    }
+
+    /* استایل‌های سیستم تگ */
+    .tag-manager {
+        position: relative;
+    }
+
+    .tag-input-container {
+        position: relative;
+        margin-bottom: 15px;
+    }
+
+    .neon-tag-input {
+        width: 100%;
+        background: rgba(0, 30, 60, 0.8);
+        border: 1px solid rgba(0, 247, 255, 0.3);
+        border-radius: 8px;
+        padding: 12px 15px;
+        color: #ffffff;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+        .neon-tag-input:focus {
+            outline: none;
+            border-color: #00f7ff;
+            box-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
+            background: rgba(0, 40, 80, 0.8);
+        }
+
+    .tag-suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(0, 20, 40, 0.95);
+        border: 1px solid rgba(0, 247, 255, 0.3);
+        border-radius: 8px;
+        margin-top: 5px;
+        max-height: 150px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+        backdrop-filter: blur(10px);
+    }
+
+    .tag-suggestion {
+        padding: 10px 15px;
+        cursor: pointer;
+        border-bottom: 1px solid rgba(0, 247, 255, 0.1);
+        transition: all 0.3s ease;
+        color: #ffffff;
+    }
+
+        .tag-suggestion:hover {
+            background: rgba(0, 247, 255, 0.1);
+            color: #00f7ff;
+        }
+
+        .tag-suggestion:last-child {
+            border-bottom: none;
+        }
+
+    .selected-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .tag {
+        background: linear-gradient(45deg, #00f7ff, #00ff88);
+        color: #001a33;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 0 10px rgba(0, 247, 255, 0.3);
+        animation: tagAppear 0.3s ease;
+    }
+
+    .tag-remove {
+        background: none;
+        border: none;
+        color: #001a33;
+        cursor: pointer;
+        font-size: 0.9rem;
+        padding: 0;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+        .tag-remove:hover {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+    @@keyframes tagAppear {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    /* استایل‌های آپلود فایل */
+    .file-upload-zone {
+        border: 2px dashed rgba(0, 247, 255, 0.3);
+        border-radius: 15px;
+        padding: 40px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        background: rgba(0, 30, 60, 0.4);
+    }
+
+        .file-upload-zone:hover {
+            border-color: #00f7ff;
+            box-shadow: 0 0 30px rgba(0, 247, 255, 0.2);
+            background: rgba(0, 40, 80, 0.4);
+        }
+
+        .file-upload-zone.dragover {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+    .upload-content {
+        pointer-events: none;
+    }
+
+    .upload-icon {
+        font-size: 3rem;
+        color: #00f7ff;
+        margin-bottom: 15px;
+        text-shadow: 0 0 20px rgba(0, 247, 255, 0.5);
+    }
+
+    .upload-content h4 {
+        color: #ffffff;
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+    }
+
+    .upload-content p {
+        color: #88ffff;
+        margin-bottom: 10px;
+    }
+
+    .upload-hint {
+        color: #88ffff;
+        font-size: 0.8rem;
+        opacity: 0.7;
+    }
+
+    .file-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .file-preview {
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+    }
+
+    .file-preview-item {
+        background: rgba(0, 30, 60, 0.8);
+        border: 1px solid rgba(0, 247, 255, 0.3);
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+        .file-preview-item:hover {
+            border-color: #00f7ff;
+            transform: translateY(-2px);
+        }
+
+        .file-preview-item img {
+            max-width: 100%;
+            border-radius: 5px;
+            max-height: 80px;
+            object-fit: cover;
+        }
+
+    .file-preview-name {
+        font-size: 0.7rem;
+        color: #ffffff;
+        margin-top: 5px;
+        word-break: break-all;
+    }
+
+    .file-remove {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: #ff4444;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 0.7rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+        .file-remove:hover {
+            background: #ff0000;
+            transform: scale(1.1);
+        }
+
+    /* استایل‌های دکمه‌ها */
+    .neon-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(0, 247, 255, 0.2);
+    }
+
+    .neon-btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+    }
+
+        .neon-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+            .neon-btn.secondary:hover {
+                background: rgba(255, 255, 255, 0.2);
+                border-color: rgba(255, 255, 255, 0.5);
+                transform: translateY(-2px);
+            }
+
+        .neon-btn.success {
+            background: linear-gradient(45deg, #00ff88, #00f7ff);
+            color: #001a33;
+            border: none;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+        }
+
+            .neon-btn.success:hover {
+                box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+                transform: translateY(-2px);
+            }
+
+    /* استایل‌های toggle */
+    .neon-toggle-group {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .neon-toggle {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+        .neon-toggle:hover {
+            background: rgba(0, 247, 255, 0.1);
+        }
+
+    .neon-checkbox {
+        display: none;
+    }
+
+    .neon-toggle-slider {
+        width: 50px;
+        height: 25px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 25px;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+        .neon-toggle-slider:before {
+            content: '';
+            position: absolute;
+            width: 21px;
+            height: 21px;
+            border-radius: 50%;
+            background: #ffffff;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
+        }
+
+    .neon-checkbox:checked + .neon-toggle-slider {
+        background: linear-gradient(45deg, #00ff88, #00f7ff);
+    }
+
+        .neon-checkbox:checked + .neon-toggle-slider:before {
+            transform: translateX(25px);
+        }
+
+    .neon-toggle-text {
+        color: #ffffff;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* استایل‌های سایدبار */
+    .neon-sidebar {
+        position: sticky;
+        top: 20px;
+    }
+
+    .feature-card {
+        border-color: rgba(255, 215, 0, 0.3);
+    }
+
+        .feature-card:hover {
+            border-color: rgba(255, 215, 0, 0.6);
+        }
+
+    .datetime-input {
+        font-family: inherit;
+    }
+
+        .datetime-input::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+    /* استایل‌های responsive */
+    @@media (max-width: 768px) {
+        .neon-form.advanced {
+            padding: 15px;
+        }
+
+        .neon-card-body {
+            padding: 15px;
+        }
+
+        .neon-actions {
+            flex-direction: column;
+        }
+
+        .neon-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<form id="editArticleForm" asp-action="Edit" enctype="multipart/form-data" class="neon-form advanced">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="ArticleId" />
+
+    <div class="neon-header">
+        <div class="neon-glow" style="background: radial-gradient(circle, rgba(255,0,255,0.3) 0%, transparent 70%);"></div>
+        <h4 class="neon-title">✏️ ویرایش مقاله</h4>
+        <p class="neon-subtitle">مقاله خود را به روزرسانی و بهبود دهید</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <!-- بخش اصلی محتوا -->
+            <div class="neon-card">
+                <div class="neon-card-header">
+                    <i class="fas fa-edit neon-icon"></i>
+                    <span>محتوا و جزئیات</span>
+                </div>
+                <div class="neon-card-body">
+                    <div class="form-group neon-input-group">
+                        <label class="neon-label">
+                            <i class="fas fa-heading"></i>
+                            عنوان مقاله
+                        </label>
+                        <input asp-for="Title" class="neon-input"
+                               placeholder="یک عنوان جذاب و گیرا بنویسید..." />
+                        <div class="neon-focus-border"></div>
+                        <span asp-validation-for="Title" class="neon-error"></span>
+                    </div>
+
+                    <div class="form-group neon-input-group">
+                        <label class="neon-label">
+                            <i class="fas fa-align-left"></i>
+                            خلاصه مقاله
+                        </label>
+                        <textarea asp-for="Summary" class="neon-textarea" rows="3"
+                                  placeholder="خلاصه مختصر و جذابی از مقاله بنویسید...">@Model.Summary</textarea>
+                        <div class="neon-focus-border"></div>
+                    </div>
+
+                    <div class="form-group neon-input-group">
+                        <label class="neon-label">
+                            <i class="fas fa-file-alt"></i>
+                            محتوای اصلی
+                        </label>
+                        <textarea asp-for="Content" class="neon-textarea large" rows="12"
+                                  placeholder="محتوای کامل و ارزشمند مقاله را اینجا بنویسید...">@Model.Content</textarea>
+                        <div class="neon-focus-border"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- سایدبار تنظیمات نئونی -->
+            <div class="neon-sidebar">
+                <!-- تنظیمات انتشار -->
+                <div class="neon-card compact">
+                    <div class="neon-card-header">
+                        <i class="fas fa-cogs neon-icon"></i>
+                        <span>تنظیمات انتشار</span>
+                    </div>
+                    <div class="neon-card-body">
+                        <div class="form-group neon-input-group">
+                            <label class="neon-label">
+                                <i class="fas fa-folder"></i>
+                                دسته‌بندی
+                            </label>
+                            <select asp-for="ArticleCategoryId" class="neon-select">
+                                <option value="">-- انتخاب دسته‌بندی --</option>
+                                @foreach (var category in ViewBag.Categories)
+                                {
+                                    <option value="@category.CategoryId"
+                                            selected="@(category.CategoryId == Model.ArticleCategoryId)">
+                                        📁 @category.Name
+                                    </option>
+                                }
+                            </select>
+                            <div class="neon-focus-border"></div>
+                        </div>
+
+                        <div class="form-group neon-input-group">
+                            <label class="neon-label">
+                                <i class="fas fa-link"></i>
+                                اسلاگ
+                            </label>
+                            <input asp-for="Slug" class="neon-input"
+                                   placeholder="اسلاگ مقاله" value="@Model.Slug" />
+                            <div class="neon-focus-border"></div>
+                        </div>
+
+                        <div class="form-group neon-input-group">
+                            <label class="neon-label">
+                                <i class="fas fa-external-link-alt"></i>
+                                منبع
+                            </label>
+                            <input asp-for="Source" class="neon-input"
+                                   placeholder="منبع مقاله (اختیاری)" value="@Model.Source" />
+                            <div class="neon-focus-border"></div>
+                        </div>
+
+                        <div class="form-group neon-input-group">
+                            <label class="neon-label">
+                                <i class="fas fa-image"></i>
+                                آدرس تصویر شاخص
+                            </label>
+                            <input asp-for="ImageUrl" class="neon-input"
+                                   placeholder="URL تصویر اصلی مقاله" value="@Model.ImageUrl" />
+                            <div class="neon-focus-border"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ویژگی‌های ویژه -->
+                <div class="neon-card compact feature-card">
+                    <div class="neon-card-header">
+                        <i class="fas fa-star neon-icon"></i>
+                        <span>ویژگی‌های ویژه</span>
+                    </div>
+                    <div class="neon-card-body">
+                        <div class="neon-toggle-group">
+                            <label class="neon-toggle">
+                                <input asp-for="IsPublished" class="neon-checkbox" />
+                                <span class="neon-toggle-slider"></span>
+                                <span class="neon-toggle-text">
+                                    <i class="fas fa-rocket"></i>
+                                    منتشر شده
+                                </span>
+                            </label>
+
+                            <label class="neon-toggle">
+                                <input asp-for="IsBreakingNews" class="neon-checkbox" />
+                                <span class="neon-toggle-slider"></span>
+                                <span class="neon-toggle-text">
+                                    <i class="fas fa-bolt"></i>
+                                    خبر فوری
+                                </span>
+                            </label>
+
+                            <label class="neon-toggle">
+                                <input asp-for="IsFeatured" class="neon-checkbox" />
+                                <span class="neon-toggle-slider"></span>
+                                <span class="neon-toggle-text">
+                                    <i class="fas fa-crown"></i>
+                                    مقاله ویژه
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- زمان‌بندی انتشار -->
+            </div>
+        </div>
+    </div>
+
+    <!-- دکمه‌های اقدام -->
+    <div class="neon-actions">
+        <button type="button" class="neon-btn secondary" data-dismiss="modal">
+            <i class="fas fa-times"></i>
+            انصراف
+        </button>
+        <button type="submit" class="neon-btn success">
+            <i class="fas fa-save"></i>
+            ذخیره تغییرات
+        </button>
+    </div>
+</form>
+
+<script>
+    // ارسال فرم ویرایش
+    $('#editArticleForm').submit(function (e) {
+        e.preventDefault();
+
+        var formData = new FormData(this);
+
+        // اضافه کردن انیمیشن loading
+        $('.neon-btn.success').html('<i class="fas fa-spinner fa-spin"></i> در حال ذخیره...').prop('disabled', true);
+
+        $.ajax({
+            url: '@Url.Action("Edit", "ArticleAdmin")',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.success) {
+                    Swal.fire({
+                        title: 'موفقیت آمیز!',
+                        text: result.message,
+                        icon: 'success',
+                        confirmButtonText: 'باشه',
+                        confirmButtonColor: '#22C55E'
+                    }).then(() => {
+                        $('#editArticleModal').modal('hide');
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'خطا!',
+                        text: result.message,
+                        icon: 'error',
+                        confirmButtonText: 'متوجه شدم'
+                    });
+                    $('.neon-btn.success').html('<i class="fas fa-save"></i> ذخیره تغییرات').prop('disabled', false);
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    title: 'خطای سرور!',
+                    text: 'خطا در ارتباط با سرور',
+                    icon: 'error',
+                    confirmButtonText: 'متوجه شدم'
+                });
+                $('.neon-btn.success').html('<i class="fas fa-save"></i> ذخیره تغییرات').prop('disabled', false);
+            }
+        });
+    });
+</script>

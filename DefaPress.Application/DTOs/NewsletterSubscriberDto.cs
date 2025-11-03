@@ -13,4 +13,13 @@ namespace DefaPress.Application.DTOs
         public DateTime SubscribedAt { get; set; }
         public bool IsActive { get; set; }
     }
+    public class NewsletterSubscriberCreateDto
+    {
+        public string Email { get; set; }
+    }
+
+    public class NewsletterSubscriberUpdateDto
+    {
+        public bool IsActive { get; set; }
+    }
 }

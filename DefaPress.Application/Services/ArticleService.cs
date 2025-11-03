@@ -1,115 +1,198 @@
-﻿//using AutoMapper;
-//using DefaPress.Application.DTOs;
-//using DefaPress.Application.Interfaces;
-//using DefaPress.Domain; 
-//using DefaPress.Infrastructure.Modules.Base.Implements;
-//using DefaPress.Infrastructure.Modules.Base.Interfaces;
-//using Helps;
-//using Microsoft.AspNetCore.Http;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Security.Claims;
-//using System.Text;
-//using System.Threading.Tasks;
+﻿using AutoMapper;
+using DefaPress.Application.DTOs;
+using DefaPress.Application.Interfaces;
+using DefaPress.Domain;
+using DefaPress.Infrastructure.Modules.Base.Interfaces;
+using Helps;
 
-//namespace DefaPress.Application.Services
-//{
-//    public class ArticleService : IArticleService
-//    {
+namespace DefaPress.Application.Services;
 
-//        public readonly IUnitOffWork _unitOfWork;
-//        public readonly IMapper _mapper;
-//        private readonly IHttpContextAccessor _httpContextAccessor;
+public class ArticleService : IArticleService
+{
+    private readonly IUnitOffWork _unitOffWork;
+    private readonly IMapper _mapper;
 
-//        public ArticleService(IUnitOffWork unitOffWork, IMapper mapper, IHttpContextAccessor httpContextAccessor)
-//        {
-//            _unitOfWork = unitOffWork;
-//            _mapper = mapper;
-//            _httpContextAccessor = httpContextAccessor;
-//        }
-//        public async Task<IEnumerable<ArticleDto>> GetAllArticlesAsync()
-//        {
-//            var articles = await _unitOfWork.ArticleRepository.GetAllAsync("ArticleCategory,Author,Comments,Tags");
-//            return _mapper.Map<IEnumerable<ArticleDto>>(articles);
+    public ArticleService(IMapper mapper, IUnitOffWork unitOffWork)
+    {
+        _mapper = mapper;
+        _unitOffWork = unitOffWork;
+    }
 
-//        }
+    public async Task<IEnumerable<ArticleListDto>> GetAllArticlesAsync(CancellationToken cancellationToken = default)
+    {
+        var articles = await _unitOffWork.ArticleRepository.GetAllAsync(
+            includeProperties: "ArticleCategory,Author,Tags,MediaFiles",
+            cancellationToken);
 
-//        public async Task<ArticleDto> GetArticleByIdAsync(int id)
-//        {
-//            var article = await _unitOfWork.ArticleRepository.GetByIdAsync(id);
-//            return _mapper.Map<ArticleDto>(article);
-//        }
+        return _mapper.Map<IEnumerable<ArticleListDto>>(articles);
+    }
 
+    public async Task<ArticleDetailDto?> GetArticleByIdAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var article = await _unitOffWork.ArticleRepository.GetByIdAsync(id, cancellationToken);
+        if (article == null) return null;
 
+        // Increment view count
+        article.ViewsCount++;
+        _unitOffWork.ArticleRepository.Update(article, cancellationToken);
+        await _unitOffWork.SaveChangesAsync(cancellationToken);
 
+        return _mapper.Map<ArticleDetailDto>(article);
+    }
 
-//        public async Task AddArticleAsync(ArticleDto articleDto)
-//        {
+    public async Task<int> CreateArticleAsync(ArticleCreateDto dto, CancellationToken cancellationToken = default)
+    {
+        var article = _mapper.Map<Article>(dto);
 
-//            var article = _mapper.Map<Article>(articleDto);
+        // Generate slug if not provided - استفاده از SlugHelper
+        if (string.IsNullOrEmpty(article.Slug))
+        {
+            article.Slug = SlugHelper.SlugifyPersian(article.Title);
+        }
 
+        // Set published date if publishing
+        if (dto.IsPublished && !dto.PublishedAt.HasValue)
+        {
+            article.PublishedAt = DateTime.UtcNow;
+        }
 
-//            var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-//            article.AuthorId = userId;
+        await _unitOffWork.ArticleRepository.AddAsync(article, cancellationToken);
+        await _unitOffWork.SaveChangesAsync(cancellationToken);
 
+        return article.ArticleId;
+    }
 
-//            article.ArticleCategoryId = articleDto.ArticleCategoryId;
-//            var baseSlug = string.IsNullOrWhiteSpace(articleDto.Slug)
-//                ? SlugHelper.SlugifyPersian(articleDto.Title)
-//                : SlugHelper.SlugifyPersian(articleDto.Slug);
+    public async Task<bool> UpdateArticleAsync(int id, ArticleUpdateDto dto, CancellationToken cancellationToken = default)
+    {
+        var article = await _unitOffWork.ArticleRepository.GetByIdAsync(id, cancellationToken);
+        if (article == null) return false;
 
-//            article.Slug = baseSlug;
+        _mapper.Map(dto, article);
 
-//            article.IsPublished = articleDto.IsPublished;
-//            article.PublishedAt = articleDto.IsPublished
-//                ? (articleDto.PublishedAt?.ToUniversalTime() ?? DateTime.UtcNow)
-//                : null;
+        // Generate slug if not provided - استفاده از SlugHelper
+        if (string.IsNullOrEmpty(article.Slug))
+        {
+            article.Slug = SlugHelper.SlugifyPersian(article.Title);
+        }
 
+        // Update published date if status changed to published
+        if (dto.IsPublished && !article.PublishedAt.HasValue)
+        {
+            article.PublishedAt = DateTime.UtcNow;
+        }
 
-//            article.Tags = articleDto.Tags?
-//                .Where(t => !string.IsNullOrWhiteSpace(t))
-//                .Select(t => new Tag { Name = t.Trim() })
-//                .DistinctBy(t => t.Name, StringComparer.OrdinalIgnoreCase) 
-//                .ToList() ?? new List<Tag>();
+        _unitOffWork.ArticleRepository.Update(article, cancellationToken);
+        await _unitOffWork.SaveChangesAsync(cancellationToken);
 
-//            await _unitOfWork.ArticleRepository.AddAsync(article);
-//            await _unitOfWork.SaveChangesAsync();
-//        }
+        return true;
+    }
 
+    public async Task<bool> DeleteArticleAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var article = await _unitOffWork.ArticleRepository.GetByIdAsync(id, cancellationToken);
+        if (article == null) return false;
 
-//        public Task UpdateArticleAsync(ArticleDto articleDto)
-//        {
-//            throw new NotImplementedException();
-//        }
+        _unitOffWork.ArticleRepository.Remove(article, cancellationToken);
+        await _unitOffWork.SaveChangesAsync(cancellationToken);
 
-//        public Task DeleteArticleAsync(int id)
-//        {
-//            throw new NotImplementedException();
-//        }
+        return true;
+    }
 
-//        public async Task PublishArticleAsync(int articleId)
-//        {
-//            var article = await _unitOfWork.ArticleRepository.GetByIdAsync(articleId);
-//            if (article == null) throw new KeyNotFoundException("Article not found.");
+    public async Task<bool> PublishArticleAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var article = await _unitOffWork.ArticleRepository.GetByIdAsync(id, cancellationToken);
+        if (article == null) return false;
 
-//            if (!article.IsPublished)
-//            {
-//                article.IsPublished = true;
-//                article.PublishedAt = DateTime.UtcNow;
-//                _unitOfWork.ArticleRepository.Update(article);
-//                await _unitOfWork.SaveChangesAsync();
-//            }
-//        }
+        article.IsPublished = true;
+        article.PublishedAt ??= DateTime.UtcNow;
 
-//        public async Task UnpublishArticleAsync(int articleId)
-//        {
-//            var article = await _unitOfWork.ArticleRepository.GetByIdAsync(articleId);
-//            if (article == null) throw new KeyNotFoundException("Article not found.");
+        _unitOffWork.ArticleRepository.Update(article, cancellationToken);
+        await _unitOffWork.SaveChangesAsync(cancellationToken);
 
-//            article.IsPublished = false;
-//            _unitOfWork.ArticleRepository.Update(article);
-//            await _unitOfWork.SaveChangesAsync();
-//        }
-//    }
-//}
+        return true;
+    }
+
+    public async Task<bool> UnpublishArticleAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var article = await _unitOffWork.ArticleRepository.GetByIdAsync(id, cancellationToken);
+        if (article == null) return false;
+
+        article.IsPublished = false;
+
+        _unitOffWork.ArticleRepository.Update(article, cancellationToken);
+        await _unitOffWork.SaveChangesAsync(cancellationToken);
+
+        return true;
+    }
+
+    // متدهای جدید برای داشبورد
+    public async Task<int> GetTotalArticlesCountAsync(CancellationToken cancellationToken = default)
+    {
+        var articles = await _unitOffWork.ArticleRepository.GetAllAsync();
+        return articles.Count();
+    }
+
+    public async Task<int> GetPublishedArticlesCountAsync(CancellationToken cancellationToken = default)
+    {
+        var articles = await _unitOffWork.ArticleRepository.GetAllAsync();
+        return articles.Count(a => a.IsPublished);
+    }
+
+    public async Task<IEnumerable<ArticleListDto>> GetRecentArticlesAsync(int count, CancellationToken cancellationToken = default)
+    {
+        var allArticles = await _unitOffWork.ArticleRepository.GetAllAsync(
+            includeProperties: "ArticleCategory,Author");
+
+        var recentArticles = allArticles
+            .OrderByDescending(a => a.CreatedAt)
+            .Take(count)
+            .ToList();
+
+        return _mapper.Map<IEnumerable<ArticleListDto>>(recentArticles);
+    }
+
+    public async Task<IEnumerable<ArticleChartDataDto>> GetArticlesChartDataAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default)
+    {
+        // دریافت تمام مقالات و فیلتر کردن در حافظه
+        var allArticles = await _unitOffWork.ArticleRepository.GetAllAsync();
+
+        var filteredArticles = allArticles
+            .Where(a => a.CreatedAt >= startDate && a.CreatedAt <= endDate)
+            .ToList();
+
+        var chartData = filteredArticles
+            .GroupBy(a => a.CreatedAt.Date)
+            .Select(g => new ArticleChartDataDto
+            {
+                Date = g.Key.ToString("MM/dd"),
+                Count = g.Count()
+            })
+            .OrderBy(x => x.Date)
+            .ToList();
+
+        // پر کردن روزهای گم‌شده
+        var fullChartData = FillMissingDays(chartData, startDate, endDate);
+
+        return fullChartData;
+    }
+
+    private List<ArticleChartDataDto> FillMissingDays(List<ArticleChartDataDto> existingData, DateTime startDate, DateTime endDate)
+    {
+        var result = new List<ArticleChartDataDto>();
+        var existingDataDict = existingData.ToDictionary(x => x.Date, x => x.Count);
+
+        for (var date = startDate.Date; date <= endDate.Date; date = date.AddDays(1))
+        {
+            var dateString = date.ToString("MM/dd");
+            var count = existingDataDict.ContainsKey(dateString) ? existingDataDict[dateString] : 0;
+
+            result.Add(new ArticleChartDataDto
+            {
+                Date = dateString,
+                Count = count
+            });
+        }
+
+        return result;
+    }
+}

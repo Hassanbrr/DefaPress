@@ -1,0 +1,125 @@
+﻿@* DefaPress.Presentation.AdminPanel/Pages/Login.razor *@
+@page "/admin/login"
+@using System.ComponentModel.DataAnnotations
+@using DefaPress.Domain
+@using Microsoft.AspNetCore.Identity
+@inherits ComponentBase
+@inject NavigationManager Navigation
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IHttpContextAccessor HttpContextAccessor
+
+<PageTitle>ورود به پنل مدیریت - DefaPress</PageTitle>
+
+<div class="login-container">
+    <div class="login-form">
+        <h3>ورود به پنل مدیریت</h3>
+
+        <EditForm Model="@loginModel" OnValidSubmit="@HandleLogin">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group">
+                <label>نام کاربری یا ایمیل</label>
+                <InputText @bind-Value="loginModel.Username" class="form-control" />
+                <ValidationMessage For="@(() => loginModel.Username)" />
+            </div>
+
+            <div class="form-group">
+                <label>رمز عبور</label>
+                <InputText type="password" @bind-Value="loginModel.Password" class="form-control" />
+                <ValidationMessage For="@(() => loginModel.Password)" />
+            </div>
+
+            <div class="form-group form-check">
+                <InputCheckbox @bind-Value="loginModel.RememberMe" class="form-check-input" />
+                <label class="form-check-label">مرا به خاطر بسپار</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100" disabled="@isLoading">
+                @if (isLoading)
+                {
+                    <span class="spinner-border spinner-border-sm" role="status"></span>
+                    <span> در حال ورود...</span>
+                }
+                else
+                {
+                    <span>ورود به پنل</span>
+                }
+            </button>
+        </EditForm>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger mt-3">
+                @errorMessage
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private LoginModel loginModel = new();
+    private bool isLoading = false;
+    private string errorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // اگر کاربر قبلاً authenticated است، redirect به admin
+        if (HttpContextAccessor.HttpContext?.User.Identity?.IsAuthenticated == true)
+        {
+            Navigation.NavigateTo("/admin");
+        }
+    }
+
+    private async Task HandleLogin()
+    {
+        isLoading = true;
+        errorMessage = string.Empty;
+
+        try
+        {
+            var result = await SignInManager.PasswordSignInAsync(
+                loginModel.Username,
+                loginModel.Password,
+                loginModel.RememberMe,
+                lockoutOnFailure: false);
+
+            if (result.Succeeded)
+            {
+                Navigation.NavigateTo("/admin", forceLoad: true);
+            }
+            else if (result.RequiresTwoFactor)
+            {
+                errorMessage = "نیاز به تأیید دو مرحله‌ای دارد";
+            }
+            else if (result.IsLockedOut)
+            {
+                errorMessage = "حساب کاربری قفل شده است";
+            }
+            else
+            {
+                errorMessage = "نام کاربری یا رمز عبور اشتباه است";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "خطا در ورود به سیستم";
+            Console.WriteLine($"Login error: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    public class LoginModel
+    {
+        [Required(ErrorMessage = "نام کاربری یا ایمیل الزامی است")]
+        public string Username { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "رمز عبور الزامی است")]
+        public string Password { get; set; } = string.Empty;
+
+        public bool RememberMe { get; set; }
+    }
+}

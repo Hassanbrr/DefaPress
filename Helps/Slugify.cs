@@ -50,14 +50,14 @@ namespace Helps
                 slug = Guid.NewGuid().ToString("n").Substring(0, 8);
 
             // 8️⃣ اضافه کردن دو حرف تصادفی انگلیسی
-            slug += "-" + GetRandomLetters(2);
+            slug += "-" + GetRandomLetters(1);
 
             return slug;
         }
 
         private static string GetRandomLetters(int count)
         {
-            const string chars = "ابپتثجچحخدذرزسشصضطظعغفقکگلمنوهی";
+            const string chars = "123456789";
             var random = new Random();
             var result = new char[count];
             for (int i = 0; i < count; i++)

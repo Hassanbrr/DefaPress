@@ -1,0 +1,190 @@
+﻿/* استایل‌های عمومی برای تمام جداول - Neon Tables */
+.neon-table-container {
+    background: rgba(30, 30, 46, 0.8);
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+/* طراحی عمومی برای کارت‌های آمار */
+.neon-stat-card {
+    background: rgba(45, 45, 65, 0.6);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    .neon-stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .neon-stat-card:hover::before {
+        opacity: 1;
+    }
+
+    .neon-stat-card:hover {
+        border-color: rgba(59, 130, 246, 0.5);
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+    }
+
+.neon-stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.neon-stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #3B82F6;
+    margin-bottom: 5px;
+}
+
+.neon-stat-label {
+    font-size: 0.9rem;
+    color: #94A3B8;
+    font-weight: 600;
+}
+
+/* گرید عمومی برای آمار */
+.neon-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+/* استایل‌های عمومی برای دکمه‌ها */
+.neon-btn {
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    .neon-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s;
+    }
+
+    .neon-btn:hover::before {
+        left: 100%;
+    }
+
+.neon-btn-primary {
+    background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+    color: white;
+}
+
+    .neon-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+    }
+
+/* استایل‌های عمومی برای badges */
+.neon-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+}
+
+/* استایل‌های عمومی برای تایتل‌ها */
+.neon-main-title {
+    font-weight: 800;
+    margin-bottom: 5px;
+}
+
+.neon-subtitle {
+    color: #94A3B8;
+    font-size: 1.1rem;
+}
+
+/* استایل‌های عمومی برای جداول DataTables */
+.dataTables_wrapper {
+    position: relative;
+}
+
+    .dataTables_wrapper .dataTables_filter input {
+        background: rgba(45, 45, 65, 0.6);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 8px;
+        color: white;
+        padding: 8px 12px;
+        transition: all 0.3s ease;
+    }
+
+        .dataTables_wrapper .dataTables_filter input:focus {
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+            outline: none;
+        }
+
+    .dataTables_wrapper .dataTables_length select {
+        background: rgba(45, 45, 65, 0.6);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 8px;
+        color: white;
+        padding: 6px 12px;
+    }
+
+    /* استایل‌های عمومی برای صفحه‌بندی */
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        border: 1px solid rgba(59, 130, 246, 0.3) !important;
+        background: rgba(45, 45, 65, 0.6) !important;
+        color: #94A3B8 !important;
+        border-radius: 8px;
+        margin: 0 2px;
+        transition: all 0.3s ease;
+    }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: rgba(59, 130, 246, 0.2) !important;
+            border-color: #3B82F6 !important;
+            color: #3B82F6 !important;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: linear-gradient(135deg, #3B82F6, #8B5CF6) !important;
+            border-color: #3B82F6 !important;
+            color: white !important;
+        }
+
+/* ریسپانسیو عمومی */
+@media (max-width: 768px) {
+    .neon-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+    }
+
+    .neon-table-container {
+        padding: 15px;
+    }
+}

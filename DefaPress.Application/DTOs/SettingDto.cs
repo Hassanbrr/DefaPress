@@ -14,10 +14,15 @@ namespace DefaPress.Application.DTOs
         public string Key { get; set; }
         public string Value { get; set; }
     }
+    public class SettingCreateDto
+    {
+        public string Category { get; set; }
+        public string Key { get; set; }
+        public string Value { get; set; }
+    }
 
-
-
-
-  
-
+    public class SettingUpdateDto
+    {
+        public string Value { get; set; }
+    }
 }

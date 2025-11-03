@@ -3,76 +3,633 @@
 @inject IWebHostEnvironment Environment
 @inject ICompositeViewEngine Engine
 <!DOCTYPE html>
-<html>
+<html lang="fa" dir="rtl">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - DefaPress.Presentation.Web</title>
+    <title>@ViewData["Title"] - خبرگزاری ایران متحد</title>
 
-    <environment include="Development">
-        <link rel="stylesheet" href="~/Identity/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/Identity/css/site.css" />
-    </environment>
-    <environment exclude="Development">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"
-              integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous"
-              asp-fallback-href="~/Identity/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/Identity/css/site.css" asp-append-version="true" />
-    </environment>
+    <!-- Fonts -->
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --dark-bg: #0a0a0a;
+            --dark-card: #1a1a1a;
+            --dark-border: #2a2a2a;
+            --neon-blue: #3a86ff;
+            --neon-pink: #ff006e;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --text-muted: #666666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Vazir', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .auth-layout {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .auth-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 90vh;
+            background: var(--dark-card);
+            border-radius: 20px;
+            border: 1px solid var(--dark-border);
+            box-shadow: 0 0 20px rgba(58, 134, 255, 0.1), 0 0 40px rgba(255, 0, 110, 0.1), inset 0 0 20px rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+            position: relative;
+        }
+
+            /* Neon Border Effect */
+            .auth-container::before {
+                content: '';
+                position: absolute;
+                top: -2px;
+                left: -2px;
+                right: -2px;
+                bottom: -2px;
+                background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink), var(--neon-blue));
+                border-radius: 22px;
+                z-index: -1;
+                animation: neon-border 3s ease-in-out infinite;
+                filter: blur(10px);
+                opacity: 0.7;
+            }
+
+        @@keyframes neon-border {
+            0%, 100% {
+                opacity: 0.7;
+                filter: blur(10px);
+            }
+
+            50% {
+                opacity: 1;
+                filter: blur(15px);
+            }
+        }
+
+        /* Hero Section */
+        .auth-hero {
+            background: linear-gradient(135deg, rgba(58, 134, 255, 0.1) 0%, rgba(255, 0, 110, 0.1) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-content {
+            text-align: center;
+            color: var(--text-primary);
+            z-index: 2;
+            position: relative;
+        }
+
+        .hero-icon {
+            font-size: 4rem;
+            margin-bottom: 25px;
+            display: block;
+            animation: neon-float 3s ease-in-out infinite;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue);
+        }
+
+        @@keyframes neon-float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue);
+            }
+
+            50% {
+                transform: translateY(-10px) rotate(5deg);
+                text-shadow: 0 0 15px var(--neon-pink), 0 0 25px var(--neon-pink), 0 0 35px var(--neon-pink);
+            }
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.3;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .hero-features {
+            list-style: none;
+            text-align: right;
+        }
+
+            .hero-features li {
+                margin-bottom: 15px;
+                font-size: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: var(--text-secondary);
+            }
+
+                .hero-features li i {
+                    color: var(--neon-blue);
+                    font-size: 1.2rem;
+                    text-shadow: 0 0 10px var(--neon-blue);
+                }
+
+        /* Form Section */
+        .auth-form-section {
+            padding: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--dark-card);
+            position: relative;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .form-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 20px var(--neon-blue), 0 0 40px var(--neon-pink);
+            animation: logo-glow 2s ease-in-out infinite alternate;
+        }
+
+        @@keyframes logo-glow {
+            from {
+                box-shadow: 0 0 20px var(--neon-blue), 0 0 40px var(--neon-pink);
+            }
+
+            to {
+                box-shadow: 0 0 30px var(--neon-blue), 0 0 60px var(--neon-pink);
+            }
+        }
+
+        .form-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--dark-border);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-primary);
+        }
+
+            .form-input:focus {
+                border-color: var(--neon-blue);
+                box-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue), inset 0 0 10px rgba(58, 134, 255, 0.1);
+                outline: none;
+                transform: translateY(-2px);
+                background: rgba(255, 255, 255, 0.08);
+            }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+
+        .form-input.with-icon {
+            padding-left: 50px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--dark-border);
+            border-radius: 6px;
+            margin-left: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+            .custom-checkbox.checked {
+                background: var(--neon-blue);
+                border-color: var(--neon-blue);
+                box-shadow: 0 0 10px var(--neon-blue);
+            }
+
+                .custom-checkbox.checked::after {
+                    content: '✓';
+                    position: absolute;
+                    color: white;
+                    font-size: 14px;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                }
+
+        .checkbox-label {
+            color: var(--text-primary);
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink));
+            border: none;
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+            box-shadow: 0 0 20px rgba(58, 134, 255, 0.3), 0 0 40px rgba(255, 0, 110, 0.2);
+        }
+
+            .auth-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 0 30px rgba(58, 134, 255, 0.5), 0 0 60px rgba(255, 0, 110, 0.3);
+            }
+
+            .auth-btn:active {
+                transform: translateY(-1px);
+            }
+
+        .btn-glow {
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn-glow::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+                transition: left 0.5s;
+            }
+
+            .btn-glow:hover::before {
+                left: 100%;
+            }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid var(--dark-border);
+        }
+
+        .auth-link {
+            color: var(--neon-blue);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+            .auth-link:hover {
+                color: var(--neon-pink);
+                transform: translateX(-5px);
+                text-shadow: 0 0 10px var(--neon-pink);
+            }
+
+        /* Error and Validation Styles */
+        .error-message {
+            background: rgba(255, 0, 110, 0.1);
+            border: 1px solid var(--neon-pink);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: var(--neon-pink);
+            font-weight: 500;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(255, 0, 110, 0.3);
+        }
+
+        .field-error {
+            color: var(--neon-pink);
+            font-size: 0.875rem;
+            margin-top: 6px;
+            display: block;
+            font-weight: 500;
+            text-shadow: 0 0 5px var(--neon-pink);
+        }
+
+        .validation-summary-errors {
+            background: rgba(255, 0, 110, 0.1);
+            border: 1px solid var(--neon-pink);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: var(--neon-pink);
+            box-shadow: 0 0 10px rgba(255, 0, 110, 0.3);
+        }
+
+            .validation-summary-errors ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .validation-summary-errors li {
+                margin-bottom: 5px;
+            }
+
+        /* Password Strength */
+        .password-strength {
+            margin-top: 8px;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--dark-border);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .strength-weak {
+            width: 33%;
+            background: var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        .strength-medium {
+            width: 66%;
+            background: #ff6b00;
+            box-shadow: 0 0 10px #ff6b00;
+        }
+
+        .strength-strong {
+            width: 100%;
+            background: var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .strength-text {
+            font-size: 0.8rem;
+            margin-top: 4px;
+            font-weight: 500;
+            text-align: right;
+        }
+
+        /* Back to Home */
+        .back-home {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            z-index: 10;
+        }
+
+        .back-home-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            border: 1px solid var(--dark-border);
+        }
+
+            .back-home-btn:hover {
+                background: rgba(255, 255, 255, 0.2);
+                color: var(--text-primary);
+                transform: translateX(-5px);
+                box-shadow: 0 0 10px var(--neon-blue);
+            }
+
+        /* Responsive Design */
+        @@media (max-width: 992px) {
+            .auth-container {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-hero {
+                padding: 40px;
+                min-height: 300px;
+            }
+
+            .auth-form-section {
+                padding: 40px;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .auth-container {
+                min-height: auto;
+            }
+
+            .auth-hero {
+                padding: 30px 20px;
+            }
+
+            .auth-form-section {
+                padding: 30px 20px;
+            }
+
+            .hero-title {
+                font-size: 1.8rem;
+            }
+
+            .form-title {
+                font-size: 1.7rem;
+            }
+
+            .back-home {
+                top: 20px;
+                right: 20px;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .auth-hero {
+                padding: 25px 15px;
+            }
+
+            .auth-form-section {
+                padding: 25px 15px;
+            }
+
+            .hero-title {
+                font-size: 1.6rem;
+            }
+
+            .form-title {
+                font-size: 1.5rem;
+            }
+
+            .form-logo {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" href="~/">DefaPress.Presentation.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    @{
-                        var result = Engine.FindView(ViewContext, "_LoginPartial", isMainPage: false);
-                    }
-                    @if (result.Success)
-                    {
-                        await Html.RenderPartialAsync("_LoginPartial");
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException("The default Identity UI layout requires a partial view '_LoginPartial' " +
-                            "usually located at '/Pages/_LoginPartial' or at '/Views/Shared/_LoginPartial' to work. Based on your configuration " +
-                            $"we have looked at it in the following locations: {System.Environment.NewLine}{string.Join(System.Environment.NewLine, result.SearchedLocations)}.");
-                    }
+    <div class="auth-layout">
+        <div class="auth-container">
+            <!-- Hero Section -->
+            <div class="auth-hero">
+                <a href="~/" class="back-home">
+                    <span class="back-home-btn">
+                        <i class="fas fa-arrow-right"></i>
+                        بازگشت به سایت
+                    </span>
+                </a>
+
+                <div class="hero-content">
+                    <div class="hero-icon">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                    <h1 class="hero-title">خبرگزاری ایران متحد</h1>
+                    <p class="hero-subtitle">سیستم مدیریت محتوای حرفه‌ای خبرگزاری ایران متحد و امنیت ملی</p>
+
+                    <ul class="hero-features">
+                        <li><i class="fas fa-shield-alt"></i> محیط امن و محافظت شده</li>
+                        <li><i class="fas fa-bolt"></i> دسترسی سریع و آسان</li>
+                        <li><i class="fas fa-newspaper"></i> مدیریت محتوای پیشرفته</li>
+                        <li><i class="fas fa-users"></i> پشتیبانی از کاربران متعدد</li>
+                    </ul>
                 </div>
             </div>
-        </nav>
-    </header>
 
-    <div class="container">
-        <partial name="_CookieConsentPartial" optional />
-        <main role="main" class="pb-1">
-            @RenderBody()
-        </main>
-    </div>
-    <footer class="footer border-top pl-3 text-muted">
-        <div class="container">
-        &copy; 2025 - DefaPress.Presentation.Web
-            @{
-                var foundPrivacy = Url.Page("/Privacy", new { area = "" });
-            }
-            @if (foundPrivacy != null)
-            {
-                <a asp-area="" asp-page="/Privacy">Privacy</a>
-            }
+            <!-- Form Section -->
+            <div class="auth-form-section">
+                <div class="form-container">
+                    <div class="form-header">
+                        <div class="form-logo">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h2 class="form-title">@ViewData["Title"]</h2>
+                        <p class="form-subtitle">لطفا اطلاعات خود را وارد کنید</p>
+                    </div>
+
+                    <main role="main">
+                        @RenderBody()
+                    </main>
+                </div>
+            </div>
         </div>
-    </footer>
+    </div>
 
-    <environment include="Development">
-        <script src="~/Identity/lib/jquery/dist/jquery.js"></script>
-        <script src="~/Identity/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
-        <script src="~/Identity/js/site.js" asp-append-version="true"></script>
-    </environment>
+ 
     <environment exclude="Development">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
                 asp-fallback-src="~/Identity/lib/jquery/dist/jquery.min.js"
@@ -86,9 +643,84 @@
                 crossorigin="anonymous"
                 integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj">
         </script>
-        <script src="~/Identity/js/site.js" asp-append-version="true"></script>
+ 
     </environment>
 
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Checkbox functionality
+            const checkboxes = document.querySelectorAll('.custom-checkbox');
+            checkboxes.forEach(checkbox => {
+                const hiddenCheckbox = checkbox.closest('.checkbox-group').querySelector('input[type="checkbox"]');
+
+                checkbox.addEventListener('click', function() {
+                    this.classList.toggle('checked');
+                    hiddenCheckbox.checked = this.classList.contains('checked');
+                });
+
+                // Initialize checkbox state
+                if (hiddenCheckbox.checked) {
+                    checkbox.classList.add('checked');
+                }
+            });
+
+            // Password strength indicator
+            const passwordInput = document.querySelector('input[type="password"]');
+            if (passwordInput) {
+                const strengthBar = document.createElement('div');
+                strengthBar.className = 'password-strength';
+                strengthBar.innerHTML = '<div class="strength-bar"></div>';
+
+                const strengthText = document.createElement('div');
+                strengthText.className = 'strength-text';
+
+                passwordInput.parentNode.appendChild(strengthBar);
+                passwordInput.parentNode.appendChild(strengthText);
+
+                passwordInput.addEventListener('input', function() {
+                    const password = this.value;
+                    let strength = 0;
+                    let text = '';
+                    let barClass = '';
+
+                    if (password.length > 0) {
+                        if (password.length < 6) {
+                            strength = 33;
+                            text = 'رمز عبور ضعیف';
+                            barClass = 'strength-weak';
+                        } else if (password.length < 10) {
+                            strength = 66;
+                            text = 'رمز عبور متوسط';
+                            barClass = 'strength-medium';
+                        } else {
+                            strength = 100;
+                            text = 'رمز عبور قوی';
+                            barClass = 'strength-strong';
+                        }
+                    }
+
+                    const bar = strengthBar.querySelector('.strength-bar');
+                    bar.className = 'strength-bar ' + barClass;
+                    bar.style.width = strength + '%';
+                    strengthText.textContent = text;
+                    strengthText.style.color = getComputedStyle(bar).backgroundColor;
+                });
+            }
+
+            // Add focus effects to inputs
+            const inputs = document.querySelectorAll('.form-input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.style.transform = 'scale(1.02)';
+                });
+
+                input.addEventListener('blur', function() {
+                    this.parentElement.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
 </body>
 </html>

@@ -113,7 +113,7 @@
     // Load tab content dynamically (simulated)
     
 
-    loadTabContent();
+    //loadTabContent();
 
     // Poll functionality
     const pollOptions = document.querySelectorAll('.poll-option');

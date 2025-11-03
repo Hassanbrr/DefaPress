@@ -16,6 +16,8 @@
     <link rel="mask-icon" href="~/Admin/img/favicon/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#2b5797">
     <meta name="theme-color" content="#ffffff">
+    @await RenderSectionAsync("Styles", required: false)
+
     <!-- Place favicon.ico in the root directory -->
     <link rel="stylesheet" href="~/Admin/css/normalize.css">
     <link href="~/Admin/css/fontawsome/all.min.css" rel="stylesheet">
@@ -158,7 +160,7 @@
                         <a asp-area="Admin" asp-controller="ArticleCategoryAdmin" asp-action="Index" class="fnt-mxs"><i class="fas fa-angle-right mr-2"></i>دسته بندی مقالات</a>
                     </li>
                     <li class="side-item">
-                        <a href="~/Admin/dark.html" class="fnt-mxs"><i class="fas fa-angle-right mr-2"></i>پنل کاربری تاریک</a>
+                        <a  asp-area="Admin" asp-controller="ArticleAdmin" asp-action="Index" class="fnt-mxs"><i class="fas fa-angle-right mr-2"></i>پنل کاربری تاریک</a>
                     </li>
                     <li class="side-item">
                         <a href="~/Admin/dark.html" class="fnt-mxs"><i class="fas fa-angle-right mr-2"></i>پنل کاربری تاریک</a>

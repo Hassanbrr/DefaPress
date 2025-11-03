@@ -7,7 +7,7 @@ namespace DefaPress.Application.DTOs
     {
         public int ArticleId { get; set; }
         public string Title { get; set; }
-        public string Slug { get; set; }
+        public string? Slug { get; set; }
         public string? Summary { get; set; }
         public string? ImageUrl { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -38,7 +38,7 @@ namespace DefaPress.Application.DTOs
     public class ArticleCreateDto
     {
         public string Title { get; set; }
-        public string Slug { get; set; }
+        public string? Slug { get; set; }
         public string? Summary { get; set; }
         public string Content { get; set; }
         public string? ImageUrl { get; set; }

@@ -1,0 +1,401 @@
+﻿@model DefaPress.Application.DTOs.ArticleCategoryCreateDto
+
+<form id="editCategoryForm" asp-action="Edit" class="neon-form">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="categoryId" value="@ViewBag.CategoryId" />
+
+    <div class="neon-header">
+        <div class="neon-glow" style="background: radial-gradient(circle, rgba(34,197,94,0.3) 0%, transparent 70%);"></div>
+        <h4 class="neon-title">✏️ ویرایش دسته‌بندی</h4>
+        <p class="neon-subtitle">اطلاعات دسته‌بندی را به‌روزرسانی کنید</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <!-- بخش اصلی اطلاعات -->
+            <div class="neon-card">
+                <div class="neon-card-header">
+                    <i class="fas fa-info-circle neon-icon"></i>
+                    <span>اطلاعات اصلی</span>
+                </div>
+                <div class="neon-card-body">
+                    <div class="form-group neon-input-group">
+                        <label class="neon-label">
+                            <i class="fas fa-heading"></i>
+                            نام دسته‌بندی
+                        </label>
+                        <input asp-for="Name" class="neon-input" value="@Model.Name" />
+                        <div class="neon-focus-border"></div>
+                        <span asp-validation-for="Name" class="neon-error"></span>
+                    </div>
+
+                    <div class="form-group neon-input-group">
+                        <label class="neon-label">
+                            <i class="fas fa-link"></i>
+                            اسلاگ
+                        </label>
+                        <input asp-for="Slug" class="neon-input" value="@Model.Slug" />
+                        <div class="neon-focus-border"></div>
+                        <span asp-validation-for="Slug" class="neon-error"></span>
+                    </div>
+
+                    <div class="form-group neon-input-group">
+                        <label class="neon-label">
+                            <i class="fas fa-align-left"></i>
+                            توضیحات
+                        </label>
+                        <textarea asp-for="Description" class="neon-textarea large" rows="4">@Model.Description</textarea>
+                        <div class="neon-focus-border"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- سایدبار تنظیمات -->
+            <div class="neon-sidebar">
+                <!-- ساختار درختی -->
+                <div class="neon-card compact">
+                    <div class="neon-card-header">
+                        <i class="fas fa-sitemap neon-icon"></i>
+                        <span>ساختار درختی</span>
+                    </div>
+                    <div class="neon-card-body">
+                        <div class="form-group neon-input-group">
+                            <label class="neon-label">
+                                <i class="fas fa-level-up-alt"></i>
+                                دسته‌بندی والد
+                            </label>
+                            <select asp-for="ParentCategoryId" class="neon-select">
+                                <option value="">-- بدون والد (دسته اصلی) --</option>
+                                @foreach (var category in ViewBag.ParentCategories)
+                                {
+                                    <option value="@category.CategoryId" selected="@(category.CategoryId == Model.ParentCategoryId)">
+                                        📁 @category.Name
+                                    </option>
+                                    @if (category.SubCategories != null && category.SubCategories.Count > 0)
+                                    {
+                                        foreach (var subCategory in category.SubCategories)
+                                        {
+                                            <option value="@subCategory.CategoryId" selected="@(subCategory.CategoryId == Model.ParentCategoryId)">
+                                                &nbsp;&nbsp; └─ 📂 @subCategory.Name
+                                            </option>
+                                        }
+                                    }
+                                }
+                            </select>
+                            <div class="neon-focus-border"></div>
+                        </div>
+
+                        <div class="form-group neon-input-group">
+                            <label class="neon-label">
+                                <i class="fas fa-sort-numeric-down"></i>
+                                ترتیب نمایش
+                            </label>
+                            <input asp-for="DisplayOrder" type="number" class="neon-input" value="@Model.DisplayOrder" />
+                            <div class="neon-focus-border"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- اطلاعات سیستمی -->
+                <div class="neon-card compact feature-card">
+                    <div class="neon-card-header">
+                        <i class="fas fa-cog neon-icon"></i>
+                        <span>اطلاعات سیستمی</span>
+                    </div>
+                    <div class="neon-card-body">
+                        <div class="neon-info-group">
+                            <div class="neon-info-item">
+                                <i class="fas fa-hashtag text-info"></i>
+                                <span>شناسه:</span>
+                                <strong>@ViewBag.CategoryId</strong>
+                            </div>
+                            <div class="neon-info-item">
+                                <i class="fas fa-calendar text-warning"></i>
+                                <span>آخرین ویرایش:</span>
+                                <strong>هم اکنون</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- دکمه‌های اقدام -->
+    <div class="neon-actions">
+        <button type="button" class="neon-btn secondary" data-dismiss="modal">
+            <i class="fas fa-times"></i>
+            انصراف
+        </button>
+        <button type="submit" class="neon-btn success">
+            <i class="fas fa-save"></i>
+            ذخیره تغییرات
+        </button>
+    </div>
+</form>
+
+<style>
+    /* استایل‌های نئونی */
+    .neon-form {
+        position: relative;
+        padding: 20px;
+    }
+
+    .neon-header {
+        text-align: center;
+        margin-bottom: 30px;
+        position: relative;
+    }
+
+    .neon-glow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(34,197,94,0.3) 0%, transparent 70%);
+        filter: blur(40px);
+        z-index: -1;
+    }
+
+    .neon-title {
+        font-size: 2rem;
+        font-weight: bold;
+        background: linear-gradient(45deg, #22C55E, #10B981, #84CC16);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+        margin-bottom: 10px;
+    }
+
+    .neon-subtitle {
+        color: #34D399;
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+
+    .neon-card {
+        background: rgba(0, 20, 40, 0.8);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        border-radius: 15px;
+        margin-bottom: 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 30px rgba(34, 197, 94, 0.1);
+        transition: all 0.3s ease;
+    }
+
+        .neon-card:hover {
+            box-shadow: 0 0 40px rgba(34, 197, 94, 0.2);
+            border-color: rgba(34, 197, 94, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .neon-card.compact {
+            margin-bottom: 15px;
+        }
+
+    .neon-card-header {
+        padding: 15px 20px;
+        border-bottom: 1px solid rgba(34, 197, 94, 0.2);
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+        color: #22C55E;
+    }
+
+    .neon-icon {
+        margin-left: 10px;
+        font-size: 1.1em;
+        text-shadow: 0 0 10px currentColor;
+    }
+
+    .neon-card-body {
+        padding: 20px;
+    }
+
+    .neon-input-group {
+        position: relative;
+        margin-bottom: 25px;
+    }
+
+    .neon-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #34D399;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+    }
+
+        .neon-label i {
+            margin-left: 8px;
+            font-size: 0.9em;
+        }
+
+    .neon-input, .neon-textarea, .neon-select {
+        width: 100%;
+        background: rgba(0, 30, 60, 0.6);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        border-radius: 8px;
+        padding: 12px 15px;
+        color: #ffffff;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+        .neon-input:focus, .neon-textarea:focus, .neon-select:focus {
+            outline: none;
+            border-color: #22C55E;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+            background: rgba(0, 40, 80, 0.8);
+        }
+
+        .neon-textarea.large {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+    .neon-focus-border {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #22C55E, #10B981);
+        transition: width 0.3s ease;
+    }
+
+    .neon-input:focus ~ .neon-focus-border,
+    .neon-textarea:focus ~ .neon-focus-border,
+    .neon-select:focus ~ .neon-focus-border {
+        width: 100%;
+    }
+
+    .neon-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(34, 197, 94, 0.2);
+    }
+
+    .neon-btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+    }
+
+        .neon-btn.success {
+            background: linear-gradient(45deg, #22C55E, #10B981);
+            color: #ffffff;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+        }
+
+            .neon-btn.success:hover {
+                box-shadow: 0 0 30px rgba(34, 197, 94, 0.6);
+                transform: translateY(-2px);
+            }
+
+        .neon-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+            .neon-btn.secondary:hover {
+                background: rgba(255, 255, 255, 0.2);
+                border-color: rgba(255, 255, 255, 0.5);
+            }
+
+    .neon-error {
+        color: #ff4444;
+        font-size: 0.8rem;
+        margin-top: 5px;
+        display: block;
+        text-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+    }
+
+    .neon-sidebar {
+        position: sticky;
+        top: 20px;
+    }
+
+    .feature-card .neon-card-header {
+        color: #F59E0B;
+    }
+
+    .feature-card .neon-icon {
+        color: #F59E0B;
+    }
+
+    .neon-info-group {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .neon-info-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+        .neon-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .neon-info-item i {
+            font-size: 0.9rem;
+            width: 20px;
+        }
+
+        .neon-info-item span {
+            color: #88ffff;
+            font-size: 0.85rem;
+            flex: 1;
+        }
+
+        .neon-info-item strong {
+            color: #ffffff;
+            font-size: 0.9rem;
+        }
+</style>
+
+<script>
+  
+    // اضافه کردن انیمیشن hover برای کارتها
+    $('.neon-card').hover(
+        function() {
+            $(this).css('transform', 'translateY(-5px)');
+        },
+        function() {
+            $(this).css('transform', 'translateY(0)');
+        }
+    );
+
+    // تولید خودکار اسلاگ از نام
+    $('#Name').on('input', function() {
+        const name = $(this).val();
+        if (name && !$('#Slug').val()) {
+            const slug = name.trim()
+                .toLowerCase()
+                .replace(/[^a-z0-9\u0600-\u06FF\s]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-');
+            $('#Slug').val(slug);
+        }
+    });
+</script>

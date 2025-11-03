@@ -1,155 +1,776 @@
-﻿@model IEnumerable<ArticleCategoryDto>
+﻿@{
+    ViewData["Title"] = "مدیریت دسته‌بندی‌ها";
+}
 
-<div class="container-fluid">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 p-2">
+@section Styles {
+    <link rel="stylesheet" href="~/Admin/css/neon-core.css" />
+    <link rel="stylesheet" href="~/Admin/css/neon-forms.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        .category-tree {
+            background: rgba(30, 30, 46, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            min-height: 400px;
+            position: relative;
+        }
 
-        <div class="row">
-            <div class="page-header breadcrumb-header p-3 mr-2 ml-2 m-2">
-                <div class="row align-items-end ">
-                    <div class="col-lg-12">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item "><a as><i class="fas fa-home"></i></a></li>
-                            <li class="breadcrumb-item active"> دسته بندی وبلاگ ها </li>
-                        </ol>
-                    </div>
-                </div>
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(30, 30, 46, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            z-index: 1000;
+        }
+
+        .loading-spinner {
+            color: #9333EA;
+            font-size: 2rem;
+        }
+
+        .category-item {
+            background: rgba(45, 45, 65, 0.6);
+            border: 1px solid rgba(147, 51, 234, 0.2);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+            .category-item:hover {
+                border-color: rgba(147, 51, 234, 0.5);
+                transform: translateX(5px);
+                box-shadow: 0 4px 15px rgba(147, 51, 234, 0.2);
+            }
+
+        .category-header {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .category-content {
+            padding: 0 20px 15px 60px;
+            border-top: 1px solid rgba(147, 51, 234, 0.1);
+        }
+
+        .category-children {
+            margin-top: 12px;
+            margin-right: 20px;
+            border-right: 2px solid rgba(147, 51, 234, 0.15);
+            position: relative;
+        }
+
+        .category-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .category-badge {
+            background: linear-gradient(45deg, #9333EA, #EC4899);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(147, 51, 234, 0.3);
+        }
+
+        /* استایل‌های مدرن برای آیکون‌های باز و بسته شدن */
+        .category-toggle {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(236, 72, 153, 0.1));
+            color: #9333EA;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+            margin-left: 12px;
+        }
+
+            .category-toggle:hover {
+                background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(236, 72, 153, 0.2));
+                transform: scale(1.1);
+                box-shadow: 0 4px 12px rgba(147, 51, 234, 0.3);
+            }
+
+            .category-toggle i {
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                font-size: 14px;
+            }
+
+            .category-toggle.collapsed i {
+                transform: rotate(-90deg);
+            }
+
+        /* طراحی مدرن برای سطوح مختلف */
+        .category-level-0 .category-toggle {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.15), rgba(59, 130, 246, 0.15));
+            color: #9333EA;
+        }
+
+        .category-level-1 .category-toggle {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(147, 51, 234, 0.15));
+            color: #22C55E;
+        }
+
+        .category-level-2 .category-toggle {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(34, 197, 94, 0.15));
+            color: #F59E0B;
+        }
+
+        .category-level-3 .category-toggle {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(245, 158, 11, 0.15));
+            color: #EF4444;
+        }
+
+        /* افکت‌های مدرن برای خطوط اتصال */
+        .category-children::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            right: -2px;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent 0%, rgba(147, 51, 234, 0.3) 20%, rgba(147, 51, 234, 0.3) 80%, transparent 100%);
+        }
+
+        .category-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -22px;
+            width: 20px;
+            height: 2px;
+            background: rgba(147, 51, 234, 0.3);
+            z-index: 1;
+        }
+
+        .sortable-ghost {
+            opacity: 0.6;
+            background: rgba(147, 51, 234, 0.2);
+            border: 2px dashed #9333EA;
+            border-radius: 12px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+
+            .empty-state i {
+                font-size: 4rem;
+                margin-bottom: 20px;
+                opacity: 0.5;
+            }
+
+        /* انیمیشن‌های مدرن */
+        @@keyframes slideDown {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .category-content {
+            animation: slideDown 0.3s ease-out;
+        }
+
+        /* استایل برای اطلاعات دسته‌بندی */
+        .category-info {
+            flex: 1;
+            margin-right: 15px;
+        }
+
+            .category-info h6 {
+                color: #fff;
+                font-weight: 600;
+                margin-bottom: 4px;
+                font-size: 1rem;
+            }
+
+            .category-info .category-meta {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+
+        .category-slug {
+            color: #94A3B8;
+            font-size: 0.85rem;
+            direction: ltr;
+            display: inline-block;
+        }
+
+        .category-parent {
+            color: #60A5FA;
+            font-size: 0.85rem;
+        }
+
+        /* دکمه‌های اکشن مدرن */
+        .neon-action-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+            .neon-action-btn.edit {
+                background: rgba(34, 197, 94, 0.1);
+                color: #22C55E;
+            }
+
+                .neon-action-btn.edit:hover {
+                    background: rgba(34, 197, 94, 0.2);
+                    transform: scale(1.1);
+                }
+
+            .neon-action-btn.delete {
+                background: rgba(239, 68, 68, 0.1);
+                color: #EF4444;
+            }
+
+                .neon-action-btn.delete:hover {
+                    background: rgba(239, 68, 68, 0.2);
+                    transform: scale(1.1);
+                }
+
+            .neon-action-btn.secondary {
+                background: rgba(148, 163, 184, 0.1);
+                color: #94A3B8;
+            }
+
+                .neon-action-btn.secondary:hover {
+                    background: rgba(148, 163, 184, 0.2);
+                    transform: scale(1.1);
+                }
+    </style>
+}
+
+<div class="container-fluid py-4">
+    <!-- هدر صفحه -->
+    <div class="neon-header-section">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="neon-main-title">📂 مدیریت دسته‌بندی‌ها</h1>
+                <p class="neon-subtitle">ساختار درختی کامل برای سازماندهی مقالات</p>
+            </div>
+            <div class="col-md-4 text-left">
+                <button class="neon-create-btn" id="mainCreateButton">
+                    <i class="fas fa-folder-plus"></i>
+                    دسته‌بندی جدید
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- آمار سریع -->
+    <div class="neon-stats-grid">
+        <div class="neon-stat-card">
+            <div class="neon-stat-icon">
+                <i class="fas fa-sitemap"></i>
+            </div>
+            <div class="neon-stat-number persianumber" id="totalCategories">0</div>
+            <div class="neon-stat-label">کل دسته‌بندی‌ها</div>
+        </div>
+        <div class="neon-stat-card">
+            <div class="neon-stat-icon">
+                <i class="fas fa-layer-group"></i>
+            </div>
+            <div class="neon-stat-number persianumber" id="rootCategories">0</div>
+            <div class="neon-stat-label">دسته‌های اصلی</div>
+        </div>
+        <div class="neon-stat-card">
+            <div class="neon-stat-icon">
+                <i class="fas fa-folder-tree"></i>
+            </div>
+            <div class="neon-stat-number persianumber" id="subCategories">0</div>
+            <div class="neon-stat-label">زیردسته‌ها</div>
+        </div>
+        <div class="neon-stat-card">
+            <div class="neon-stat-icon">
+                <i class="fas fa-sort-amount-down"></i>
+            </div>
+            <div class="neon-stat-number persianumber" id="maxDepth">0</div>
+            <div class="neon-stat-label">حداکثر عمق</div>
+        </div>
+    </div>
+
+    <!-- ساختار درختی دسته‌بندی‌ها -->
+    <div class="category-tree">
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="text-center">
+                <i class="fas fa-spinner fa-spin loading-spinner"></i>
+                <p class="text-white mt-2">در حال بارگذاری دسته‌بندی‌ها...</p>
             </div>
         </div>
 
-        <div class="card shade h-100 ">
-            <div class="card-body table-responsive">
-                <div class="d-flex justify-content-around">
-                    <h5 class="card-title">لیست دسته بندی ها</h5>
-                    <button class="btn o-primary text-center" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="openCategoryModal(0)">اضافه کردن</button>
-                </div>
-                <hr>
-
-                <table id="CategoryTable" class="table table-striped table-bordered m-1" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>شناسه</th>
-                            <th>نام</th>
-                            <th>ترتیب نمایش</th>
-                            <th>اسلاگ</th>
-                            <th>توضیحات</th>
-                            <th>دسته والد</th>
-                            <th>تنظیمات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            int counter = 1;
-                        }
-                        @foreach (var category in Model)
-                        {
-                            <tr>
-                                <td>@counter</td>
-                                <td>@category.Name</td>
-                                <td>@category.DisplayOrder</td>
-                                <td>@category.Slug</td>
-                                <td>@category.Description</td>
-                                <td>@(category.ParentCategoryName)</td>
-                                <td>
-                                    <button type="button" class="btn c-warning" data-bs-toggle="modal" data-bs-target="#categoryModal"
-                                            onclick="openCategoryModal(@category.CategoryId)">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn c-forth btn-sm" onclick="openDeleteModal(@category.CategoryId)">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            counter++;
-                        }
-                    </tbody>
-                </table>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="text-white mb-0">
+                <i class="fas fa-network-wired text-purple mr-2"></i>
+                ساختار درختی دسته‌بندی‌ها
+            </h5>
+            <div>
+                <button class="neon-action-btn secondary" id="expandAllBtn" title="باز کردن همه">
+                    <i class="fas fa-expand-alt"></i>
+                </button>
+                <button class="neon-action-btn secondary" id="collapseAllBtn" title="بستن همه">
+                    <i class="fas fa-compress-alt"></i>
+                </button>
+                <button class="neon-action-btn success" id="saveSortingBtn" title="ذخیره ترتیب">
+                    <i class="fas fa-save"></i>
+                </button>
+                <button class="neon-action-btn info" id="refreshTreeBtn" title="بارگذاری مجدد">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
             </div>
+        </div>
+
+        <div id="categoryTree">
+            <!-- محتوای درخت به صورت AJAX لود می‌شود -->
         </div>
     </div>
 </div>
 
-<!-- Modal Create/Edit -->
-<div class="modal fade" id="categoryModal" tabindex="-1" aria-hidden="true">
+<!-- Modal ایجاد دسته‌بندی -->
+<div class="modal fade" id="createCategoryModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content" id="categoryModalContent" style="background-color:#404040;">
-            <!-- فرم Upsert اینجا به‌صورت Ajax بارگذاری می‌شود -->
+        <div class="modal-content" style="background: linear-gradient(135deg, #1E1E1E 0%, #2a2a2a 100%); border: 1px solid rgba(147, 51, 234, 0.3);">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(147, 51, 234, 0.2);">
+                <h5 class="modal-title" style="color: #9333EA; font-weight: 700;">📁 ایجاد دسته‌بندی جدید</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" style="opacity: 0.8;">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="createCategoryModalBody" style="padding: 0;">
+                <!-- محتوای مودال توسط AJAX لود می‌شود -->
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Modal Delete -->
-<div class="modal fade" id="DeleteConfirmModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">حذف دسته‌بندی</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<!-- Modal ویرایش دسته‌بندی -->
+<div class="modal fade" id="editCategoryModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background: linear-gradient(135deg, #1E1E1E 0%, #2a2a2a 100%); border: 1px solid rgba(34, 197, 94, 0.3);">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(34, 197, 94, 0.2);">
+                <h5 class="modal-title" style="color: #22C55E; font-weight: 700;">✏️ ویرایش دسته‌بندی</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" style="opacity: 0.8;">
+                    <span>&times;</span>
+                </button>
             </div>
-            <div class="modal-body">
-                <p>آیا مطمئن هستید که می‌خواهید این دسته‌بندی را حذف کنید؟</p>
-                <input type="hidden" id="deleteCategoryId" />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
-                <button type="button" class="btn btn-danger" onclick="confirmDeleteCategory()">حذف</button>
+            <div class="modal-body" id="editCategoryModalBody" style="padding: 0;">
+                <!-- محتوای مودال توسط AJAX لود می‌شود -->
             </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $('#CategoryTable').DataTable({
-                language: { url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/fa.json' },
-                responsive: true,
-                pagingType: "full_numbers",
-                dom: '<"top"l>rt<"bottom"ip><"clear">',
-                columnDefs: [{ orderable: false, targets: [5] }],
-                lengthMenu: [[5, 10, 20, -1], [5, 10, 20, "همه"]],
-                order: [[0, 'asc']]
-            });
+        // متغیرهای سراسری
+        let sortableInstances = [];
+        let isInitialized = false;
+
+        // URLهای ثابت
+        const urls = {
+            edit: '@Url.Action("Edit", "ArticleCategoryAdmin")',
+            create: '@Url.Action("Create", "ArticleCategoryAdmin")',
+            delete: '@Url.Action("Delete", "ArticleCategoryAdmin")',
+            move: '@Url.Action("MoveCategory", "ArticleCategoryAdmin")',
+            updateOrders: '@Url.Action("UpdateDisplayOrders", "ArticleCategoryAdmin")',
+            loadTree: '@Url.Action("LoadCategoryTree", "ArticleCategoryAdmin")',
+            getStats: '@Url.Action("GetCategoryStats", "ArticleCategoryAdmin")'
+        };
+
+        // بارگذاری اولیه صفحه
+        $(document).ready(function() {
+            console.log('Document ready - Initializing Article Category Admin...');
+            initializePage();
         });
 
-        // باز کردن مدال Create/Edit
-        function openCategoryModal(id) {
-            var url = '@Url.Action("Upsert", "ArticleCategoryAdmin", new { area = "Admin" })' + (id ? '?id=' + id : '');
-            $.get(url, function (data) {
-                $('#categoryModalContent').html(data);
-                // 🔴 فعال کردن دوباره اعتبارسنجی روی فرم
-                $.validator.unobtrusive.parse("#CategoryForm");
+        function initializePage() {
+            loadCategoryTree();
+            loadCategoryStats();
+            initializeEventDelegation();
+            initializeMainButtons();
+        }
+
+        // Event Delegation برای مدیریت کلیک‌ها
+        function initializeEventDelegation() {
+            console.log('Initializing event delegation...');
+
+            // مدیریت کلیک روی دکمه toggle با طراحی جدید
+            $(document).off('click', '.category-toggle').on('click', '.category-toggle', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const $toggle = $(this);
+                const $content = $toggle.closest('.category-item').find('.category-content');
+                const $icon = $toggle.find('i');
+
+                $content.slideToggle(300, function() {
+                    $toggle.toggleClass('collapsed', !$content.is(':visible'));
+                });
+            });
+
+            // مدیریت کلیک روی دکمه ویرایش
+            $(document).off('click', '.neon-action-btn.edit').on('click', '.neon-action-btn.edit', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Edit button clicked');
+
+                const categoryId = $(this).closest('.category-item').data('category-id');
+                console.log('Category ID:', categoryId);
+                if (categoryId) {
+                    openEditModal(categoryId);
+                }
+            });
+
+            // مدیریت کلیک روی دکمه حذف
+            $(document).off('click', '.neon-action-btn.delete').on('click', '.neon-action-btn.delete', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Delete button clicked');
+
+                const $item = $(this).closest('.category-item');
+                const categoryId = $item.data('category-id');
+                const categoryName = $item.find('.category-info h6').text().trim();
+
+                console.log('Category ID:', categoryId, 'Name:', categoryName);
+                if (categoryId && categoryName) {
+                    deleteCategory(categoryId, categoryName);
+                }
+            });
+
+            // مدیریت کلیک روی دکمه انتقال به دسته اصلی
+            $(document).off('click', '.neon-action-btn.secondary').on('click', '.neon-action-btn.secondary', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Move to root button clicked');
+
+                const categoryId = $(this).closest('.category-item').data('category-id');
+                console.log('Category ID:', categoryId);
+                if (categoryId) {
+                    moveCategory(categoryId, null);
+                }
+            });
+
+            // مدیریت کلیک روی دکمه ایجاد اولین دسته‌بندی
+            $(document).off('click', '#createFirstCategory').on('click', '#createFirstCategory', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Create first category button clicked');
+                openCreateModal();
             });
         }
 
-        // ارسال فرم با Ajax
-        $(document).on("submit", "#CategoryForm", function (e) {
-            e.preventDefault();
-            var form = $(this);
+        // مقداردهی دکمه‌های اصلی
+        function initializeMainButtons() {
+            console.log('Initializing main buttons...');
 
-            $.ajax({
-                url: form.attr("action"),
-                type: form.attr("method"),
-                data: form.serialize(),
-                success: function (response) {
-                    if (response.success) {
-                        $("#categoryModal").modal("hide");
-                        location.reload();
+            // دکمه ایجاد اصلی
+            $('#mainCreateButton').off('click').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Main create button clicked');
+                openCreateModal();
+            });
+
+            // دکمه‌های کنترل درخت
+            $('#expandAllBtn').off('click').on('click', expandAll);
+            $('#collapseAllBtn').off('click').on('click', collapseAll);
+            $('#saveSortingBtn').off('click').on('click', saveSorting);
+            $('#refreshTreeBtn').off('click').on('click', refreshTree);
+        }
+
+        // بارگذاری درخت دسته‌بندی‌ها
+        function loadCategoryTree() {
+            console.log('Loading category tree...');
+            showLoading();
+
+            $.get(urls.loadTree)
+                .done(function(data) {
+                    console.log('Category tree loaded successfully');
+                    $('#categoryTree').html(data);
+                    if (!isInitialized) {
+                        initializeSortable();
+                        isInitialized = true;
                     } else {
-                        $("#categoryModalContent").html(response);
-                        // 🔴 دوباره bind کردن اعتبارسنجی بعد از جایگزینی Partial
-                        $.validator.unobtrusive.parse("#CategoryForm");
+                        reinitializeSortable();
                     }
-                },
-                error: function () {
-                    alert("خطایی در ثبت دسته‌بندی رخ داده است!");
+                    hideLoading();
+                })
+                .fail(function(xhr) {
+                    console.error('Error loading category tree:', xhr);
+                    $('#categoryTree').html(`
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h4>خطا در بارگذاری داده‌ها</h4>
+                            <p>مشکلی در ارتباط با سرور رخ داده است</p>
+                            <button class="neon-action-btn info mt-3" onclick="loadCategoryTree()">
+                                <i class="fas fa-redo"></i>
+                                تلاش مجدد
+                            </button>
+                        </div>
+                    `);
+                    hideLoading();
+                });
+        }
+
+        // بارگذاری آمار
+        function loadCategoryStats() {
+            console.log('Loading category stats...');
+            $.get(urls.getStats)
+                .done(function(stats) {
+                    console.log('Stats loaded:', stats);
+                    $('#totalCategories').text(stats.total);
+                    $('#rootCategories').text(stats.rootCategories);
+                    $('#subCategories').text(stats.subCategories);
+                    $('#maxDepth').text(stats.maxDepth);
+                })
+                .fail(function(xhr) {
+                    console.error('Error loading stats:', xhr);
+                });
+        }
+
+        // بارگذاری مجدد
+        function refreshTree() {
+            console.log('Refreshing tree...');
+            loadCategoryTree();
+            loadCategoryStats();
+        }
+
+        // نمایش loading
+        function showLoading() {
+            $('#loadingOverlay').show();
+        }
+
+        // مخفی کردن loading
+        function hideLoading() {
+            $('#loadingOverlay').hide();
+        }
+
+        // مقداردهی اولیه Sortable
+        function initializeSortable() {
+            console.log('Initializing Sortable...');
+            const categoryContainers = document.querySelectorAll('.category-children');
+            categoryContainers.forEach(container => {
+                const sortable = new Sortable(container, {
+                    group: 'categories',
+                    animation: 200,
+                    ghostClass: 'sortable-ghost',
+                    chosenClass: 'sortable-chosen',
+                    dragClass: 'sortable-drag',
+                    onEnd: function(evt) {
+                        console.log('Sortable item moved');
+                    }
+                });
+                sortableInstances.push(sortable);
+            });
+        }
+
+        // بازسازی Sortable
+        function reinitializeSortable() {
+            console.log('Reinitializing Sortable...');
+            // پاک کردن instanceهای قبلی
+            sortableInstances.forEach(instance => {
+                if (instance && instance.destroy) {
+                    instance.destroy();
                 }
             });
+            sortableInstances = [];
+            initializeSortable();
+        }
+
+        // باز کردن مودال ایجاد
+        function openCreateModal() {
+            console.log('Opening create modal...');
+            showLoading();
+            $('#createCategoryModalBody').load(urls.create, function(response, status, xhr) {
+                if (status === "error") {
+                    console.error('Error loading create modal:', xhr.status, xhr.statusText);
+                    toastr.error('خطا در بارگذاری فرم ایجاد');
+                    hideLoading();
+                } else {
+                    $('#createCategoryModal').modal('show');
+                    hideLoading();
+                }
+            });
+        }
+
+        // باز کردن مودال ویرایش
+        function openEditModal(id) {
+            console.log('Opening edit modal for category:', id);
+            showLoading();
+            $('#editCategoryModalBody').load(urls.edit + '/' + id, function(response, status, xhr) {
+                if (status === "error") {
+                    console.error('Error loading edit modal:', xhr.status, xhr.statusText);
+                    toastr.error('خطا در بارگذاری فرم ویرایش');
+                    hideLoading();
+                } else {
+                    $('#editCategoryModal').modal('show');
+                    hideLoading();
+                }
+            });
+        }
+
+        // حذف دسته‌بندی
+        function deleteCategory(id, name) {
+            console.log('Deleting category:', id, name);
+            if (confirm(`آیا از حذف دسته‌بندی "${name}" اطمینان دارید؟\n\n⚠️ در صورت وجود زیردسته یا مقالات، عملیات ناموفق خواهد بود.`)) {
+                showLoading();
+                $.post(urls.delete + '/' + id)
+                    .done(function(result) {
+                        if (result.success) {
+                            toastr.success(result.message);
+                            refreshTree();
+                        } else {
+                            toastr.error(result.message);
+                            hideLoading();
+                        }
+                    })
+                    .fail(function(xhr) {
+                        console.error('Delete error:', xhr);
+                        toastr.error('خطا در حذف دسته‌بندی');
+                        hideLoading();
+                    });
+            }
+        }
+
+        // جابجایی دسته‌بندی
+        function moveCategory(id, newParentId) {
+            console.log('Moving category:', id, 'to parent:', newParentId);
+            showLoading();
+            $.post(urls.move, { id: id, newParentId: newParentId })
+                .done(function(result) {
+                    if (result.success) {
+                        toastr.success(result.message);
+                        refreshTree();
+                    } else {
+                        toastr.error(result.message);
+                        hideLoading();
+                    }
+                })
+                .fail(function(xhr) {
+                    console.error('Move error:', xhr);
+                    toastr.error('خطا در جابجایی دسته‌بندی');
+                    hideLoading();
+                });
+        }
+
+        // مدیریت باز و بسته کردن با طراحی جدید
+        function expandAll() {
+            console.log('Expanding all categories...');
+            $('.category-content').slideDown(300, function() {
+                $('.category-toggle').removeClass('collapsed');
+            });
+        }
+
+        function collapseAll() {
+            console.log('Collapsing all categories...');
+            $('.category-content').slideUp(300, function() {
+                $('.category-toggle').addClass('collapsed');
+            });
+        }
+
+        // ذخیره ترتیب
+        function saveSorting() {
+            console.log('Saving sorting...');
+            const orders = [];
+            $('.category-children').each(function() {
+                const parentId = $(this).data('parent-id') || null;
+                $(this).children('.category-item').each(function(index) {
+                    const categoryId = $(this).data('category-id');
+                    orders.push({ CategoryId: categoryId, DisplayOrder: index });
+                });
+            });
+
+            console.log('Orders to save:', orders);
+            showLoading();
+            $.post(urls.updateOrders, { orders: orders })
+                .done(function(result) {
+                    if (result.success) {
+                        toastr.success(result.message);
+                    } else {
+                        toastr.error(result.message);
+                    }
+                    hideLoading();
+                })
+                .fail(function(xhr) {
+                    console.error('Sorting error:', xhr);
+                    toastr.error('خطا در ذخیره ترتیب');
+                    hideLoading();
+                });
+        }
+
+        // مدیریت ارسال فرم‌ها
+        $(document).off('submit', '#createCategoryForm').on('submit', '#createCategoryForm', function(e) {
+            e.preventDefault();
+            console.log('Create form submitted');
+            submitCategoryForm($(this), urls.create);
         });
 
+        $(document).off('submit', '#editCategoryForm').on('submit', '#editCategoryForm', function(e) {
+            e.preventDefault();
+            console.log('Edit form submitted');
+            const categoryId = $(this).find('[name="categoryId"]').val();
+            submitCategoryForm($(this), urls.edit + '/' + categoryId);
+        });
+
+        function submitCategoryForm(form, url) {
+            console.log('Submitting form to:', url);
+            showLoading();
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: form.serialize(),
+                success: function(result) {
+                    if (result.success) {
+                        toastr.success(result.message);
+                        $('.modal').modal('hide');
+                        refreshTree();
+                    } else {
+                        toastr.error(result.message);
+                        hideLoading();
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Form submission error:', xhr);
+                    toastr.error('خطا در ارسال فرم');
+                    hideLoading();
+                }
+            });
+        }
     </script>
 }

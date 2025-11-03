@@ -20,12 +20,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    const widthDynamicElement = document.querySelector('.WidthDynamic');
+    const widthDynamic = document.querySelector('.WidthDynamic');
     const btnDynamicElements = document.querySelectorAll('.btn_Dynamic');
     const nav_container = document.querySelector('.nav-container');
 
     function checkElementWidth() {
-        if (WidthDynamic >= 1100) {
+        if (widthDynamic >= 1100) {
 
             btnDynamicElements.forEach(btn => {
                 btn.style.display = 'block';
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     function checkElementWidth2() {
-        if (WidthDynamic <= 768) {
+        if (widthDynamic <= 768) {
 
             btnDynamicElements.forEach(btn => {
                 btn.style.display = 'none';

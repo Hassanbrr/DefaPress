@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace DefaPress.Infrastructure.Context
 {
-    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
@@ -76,8 +76,7 @@ namespace DefaPress.Infrastructure.Context
                     .IsRequired()
                     .HasMaxLength(300);
 
-                b.Property(a => a.Slug)
-                    .IsRequired()
+                b.Property(a => a.Slug)  
                     .HasMaxLength(250);
 
                 b.Property(a => a.Summary)

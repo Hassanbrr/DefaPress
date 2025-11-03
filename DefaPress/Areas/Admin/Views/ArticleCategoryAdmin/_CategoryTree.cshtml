@@ -1,0 +1,100 @@
+﻿@model IEnumerable<DefaPress.Application.DTOs.ArticleCategoryDto>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="empty-state">
+        <i class="fas fa-folder-open"></i>
+        <h4>هنوز دسته‌بندی‌ای ایجاد نشده</h4>
+        <p>برای شروع، اولین دسته‌بندی را ایجاد کنید</p>
+        <button class="neon-create-btn mt-3" id="createFirstCategory">
+            <i class="fas fa-plus"></i>
+            ایجاد اولین دسته‌بندی
+        </button>
+    </div>
+}
+else
+{
+    @functions {
+        void RenderCategoryTree(IEnumerable<ArticleCategoryDto> categories, int level = 0, string parentId = null)
+        {
+            foreach (var category in categories.OrderBy(c => c.DisplayOrder))
+            {
+                var hasChildren = category.SubCategories != null && category.SubCategories.Count > 0;
+                <div class="category-item" data-category-id="@category.CategoryId">
+                    <div class="category-header">
+                        <div class="d-flex align-items-center">
+                            @if (hasChildren)
+                            {
+                                <button class="category-toggle btn btn-sm btn-link text-purple mr-2">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            }
+                            else
+                            {
+                                <span class="mr-2" style="width: 24px;"></span>
+                            }
+                            <div class="category-info">
+                                <h6 class="mb-1 text-white">@category.Name</h6>
+                                <div class="d-flex align-items-center gap-3">
+                                    <small class="text-muted">/@category.Slug</small>
+                                    <span class="category-badge">
+                                        ترتیب: @category.DisplayOrder
+                                    </span>
+                                    @if (!string.IsNullOrEmpty(category.ParentCategoryName))
+                                    {
+                                        <small class="text-info">
+                                            <i class="fas fa-level-up-alt"></i>
+                                            @category.ParentCategoryName
+                                        </small>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="category-actions">
+                            <button class="neon-action-btn edit" title="ویرایش">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            @if (level > 0)
+                            {
+                                <button class="neon-action-btn secondary" title="تبدیل به دسته اصلی">
+                                    <i class="fas fa-arrow-up"></i>
+                                </button>
+                            }
+                            <button class="neon-action-btn delete" title="حذف">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    @if (hasChildren)
+                    {
+                        <div class="category-content" @(level > 2 ? "style=display:none" : "")>
+                            <div class="category-children" data-parent-id="@category.CategoryId">
+                                @{
+                                    RenderCategoryTree(category.SubCategories, level + 1, category.CategoryId.ToString());
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        }
+    }
+
+     
+        RenderCategoryTree(Model.Where(c => c.ParentCategoryId == null));
+     
+}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const createFirstBtn = document.getElementById('createFirstCategory');
+        if (createFirstBtn) {
+            createFirstBtn.addEventListener('click', function() {
+                if (typeof openCreateModal === 'function') {
+                    openCreateModal();
+                }
+            });
+        }
+    });
+</script>

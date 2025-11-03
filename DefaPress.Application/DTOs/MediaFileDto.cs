@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,10 +18,15 @@ namespace DefaPress.Application.DTOs
         public int? ArticleId { get; set; }
     }
 
-    public class MediaUploadResultDto
+    public class MediaFileCreateDto
     {
-        public int Id { get; set; }
-        public string FileUrl { get; set; }
+        public IFormFile File { get; set; }
+        public int? ArticleId { get; set; }
+    }
+
+    public class MediaFileUpdateDto
+    {
+        public int? ArticleId { get; set; }
     }
 
 }

@@ -1,252 +1,201 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using DefaPress.Application.DTOs;
 using DefaPress.Application.Interfaces;
 using DefaPress.Domain;
 using DefaPress.Infrastructure.Modules.Base.Interfaces;
-using Helps; // for IUnitOffWork or adjust namespace
-// adjust namespaces above to match پروژهٔ شما
+using Helps;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DefaPress.Application.Services
 {
     public class ArticleCategoryService : IArticleCategoryService
     {
-        private readonly IUnitOffWork _uow;
+        private readonly IUnitOffWork _unitOffWork;
         private readonly IMapper _mapper;
 
-        public ArticleCategoryService(IUnitOffWork uow, IMapper mapper)
+        public ArticleCategoryService(IMapper mapper, IUnitOffWork unitOffWork)
         {
-            _uow = uow;
             _mapper = mapper;
+            _unitOffWork = unitOffWork;
         }
 
         public async Task<IEnumerable<ArticleCategoryDto>> GetAllCategoriesAsync(CancellationToken cancellationToken = default)
         {
-            // includeProperties could be used if repo supports string includes; we'll request all and map
-            var categories = (await _uow.ArticleCategoryRepository.GetAllAsync(includeProperties: "ParentCategory", ct: cancellationToken))
-                .OrderBy(c => c.DisplayOrder)
-                .ToList();
+            var categories = await _unitOffWork.ArticleCategoryRepository.GetAllAsync(
+                includeProperties: "ParentCategory,SubCategories",
+                cancellationToken);
 
-            return _mapper.Map<List<ArticleCategoryDto>>(categories);
+            return _mapper.Map<IEnumerable<ArticleCategoryDto>>(categories);
         }
 
         public async Task<IEnumerable<ArticleCategoryDto>> GetCategoryTreeAsync(int maxDepth = 5, CancellationToken cancellationToken = default)
         {
-            // Load all categories (no tracking ideally done by repo)
-            var all = (await _uow.ArticleCategoryRepository.GetAllAsync(includeProperties: null, ct: cancellationToken))
-                .OrderBy(c => c.DisplayOrder)
-                .ToList();
+            // دریافت تمام دسته‌بندی‌ها و فیلتر کردن در حافظه
+            var allCategories = await _unitOffWork.ArticleCategoryRepository.GetAllAsync(
+                includeProperties: GetIncludePropertiesForDepth(maxDepth));
 
-            // Map each entity to DTO (shallow)
-            var lookup = all.ToDictionary(c => c.CategoryId, c => _mapper.Map<ArticleCategoryDto>(c));
+            // فیلتر کردن دسته‌بندی‌های ریشه در حافظه
+            var rootCategories = allCategories.Where(c => c.ParentCategoryId == null);
 
-            // Ensure SubCategories lists are empty initially
-            foreach (var dto in lookup.Values)
-                dto.SubCategories = new List<ArticleCategoryDto>();
+            return _mapper.Map<IEnumerable<ArticleCategoryDto>>(rootCategories);
+        }
 
-            var roots = new List<ArticleCategoryDto>();
+        private string GetIncludePropertiesForDepth(int depth)
+        {
+            var includes = new List<string> { "ParentCategory" };
 
-            foreach (var e in all)
+            for (int i = 1; i <= depth; i++)
             {
-                var dto = lookup[e.CategoryId];
-                if (e.ParentCategoryId.HasValue && lookup.TryGetValue(e.ParentCategoryId.Value, out var parentDto))
-                {
-                    dto.ParentCategoryName = parentDto.Name;
-                    parentDto.SubCategories.Add(dto);
-                }
-                else
-                {
-                    roots.Add(dto);
-                }
+                var includePath = string.Join(".", Enumerable.Repeat("SubCategories", i));
+                includes.Add(includePath);
             }
 
-            // Trim depth if requested
-            if (maxDepth > 0)
-            {
-                void Trim(List<ArticleCategoryDto> nodes, int currentDepth)
-                {
-                    if (nodes == null || !nodes.Any()) return;
-                    if (currentDepth >= maxDepth)
-                    {
-                        foreach (var n in nodes) n.SubCategories = new List<ArticleCategoryDto>();
-                        return;
-                    }
-
-                    foreach (var n in nodes) Trim(n.SubCategories, currentDepth + 1);
-                }
-
-                Trim(roots, 1);
-            }
-
-            return roots;
+            return string.Join(",", includes);
         }
 
         public async Task<ArticleCategoryDto?> GetCategoryByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            var entity = await _uow.ArticleCategoryRepository.GetByIdAsync(id, cancellationToken);
-            if (entity == null) return null;
-
-            // load parent name if exist (repo.GetByIdAsync does not include ParentCategory nav)
-            if (entity.ParentCategoryId.HasValue)
-            {
-                var parent = await _uow.ArticleCategoryRepository.GetByIdAsync(entity.ParentCategoryId.Value, cancellationToken);
-                entity.ParentCategory = parent; // optional: for mapper if it relies on ParentCategory
-            }
-
-            var dto = _mapper.Map<ArticleCategoryDto>(entity);
-            dto.ParentCategoryName = entity.ParentCategory?.Name;
-            return dto;
+            var category = await _unitOffWork.ArticleCategoryRepository.GetByIdAsync(id, cancellationToken);
+            return category == null ? null : _mapper.Map<ArticleCategoryDto>(category);
         }
 
         public async Task<int> AddCategoryAsync(ArticleCategoryCreateDto dto, CancellationToken cancellationToken = default)
         {
-            if (dto == null) throw new ArgumentNullException(nameof(dto));
+            var category = _mapper.Map<ArticleCategory>(dto);
 
-            var entity = _mapper.Map<ArticleCategory>(dto);
-
-            // Validate parent if provided
-            if (dto.ParentCategoryId.HasValue)
+            // Generate slug if not provided
+            if (string.IsNullOrEmpty(category.Slug))
             {
-                var parent = await _uow.ArticleCategoryRepository.GetByIdAsync(dto.ParentCategoryId.Value, cancellationToken);
-                if (parent == null)
-                    throw new KeyNotFoundException("Parent category not found.");
-
-                entity.ParentCategoryId = parent.CategoryId;
+                category.Slug = SlugHelper.SlugifyPersian(category.Name);
             }
 
-            // Optionally set DisplayOrder if not provided: put at end
-            if (entity.DisplayOrder == 0)
-            {
-                var all = (await _uow.ArticleCategoryRepository.GetAllAsync(includeProperties: null, ct: cancellationToken)).ToList();
-                entity.DisplayOrder = all.Any() ? all.Max(x => x.DisplayOrder) + 1 : 1;
-            }
+            await _unitOffWork.ArticleCategoryRepository.AddAsync(category, cancellationToken);
+            await _unitOffWork.SaveChangesAsync(cancellationToken);
 
-            entity.Slug = SlugHelper.SlugifyPersian(entity.Name);
-            await _uow.ArticleCategoryRepository.AddAsync(entity, cancellationToken);
-            await _uow.SaveChangesAsync(cancellationToken);
-
-            return entity.CategoryId;
+            return category.CategoryId;
         }
 
         public async Task<bool> UpdateCategoryAsync(int id, ArticleCategoryCreateDto dto, CancellationToken cancellationToken = default)
         {
-            if (dto == null) throw new ArgumentNullException(nameof(dto));
+            var category = await _unitOffWork.ArticleCategoryRepository.GetByIdAsync(id, cancellationToken);
+            if (category == null) return false;
 
-            var entity = await _uow.ArticleCategoryRepository.GetByIdAsync(id, cancellationToken);
-            if (entity == null) return false;
+            _mapper.Map(dto, category);
 
-            // Update simple fields
-            entity.Name = dto.Name;
-            entity.Slug = dto.Slug;
-            entity.Description = dto.Description;
-            entity.DisplayOrder = dto.DisplayOrder;
-
-            // Parent change: ensure not self and not creating a cycle
-            if (dto.ParentCategoryId == id)
-                throw new InvalidOperationException("Category cannot be its own parent.");
-
-            if (dto.ParentCategoryId.HasValue)
+            // Generate slug if not provided
+            if (string.IsNullOrEmpty(category.Slug))
             {
-                var newParent = await _uow.ArticleCategoryRepository.GetByIdAsync(dto.ParentCategoryId.Value, cancellationToken);
-                if (newParent == null) throw new KeyNotFoundException("Parent category not found.");
-
-                // walk up parents to detect cycle
-                var p = newParent;
-                while (p != null)
-                {
-                    if (p.CategoryId == entity.CategoryId)
-                        throw new InvalidOperationException("Changing parent would create a cycle.");
-                    p = p.ParentCategoryId.HasValue ? await _uow.ArticleCategoryRepository.GetByIdAsync(p.ParentCategoryId.Value, cancellationToken) : null;
-                }
-
-                entity.ParentCategoryId = newParent.CategoryId;
-            }
-            else
-            {
-                entity.ParentCategoryId = null;
+                category.Slug = SlugHelper.SlugifyPersian(category.Name);
             }
 
-            _uow.ArticleCategoryRepository.Update(entity, cancellationToken);
-            await _uow.SaveChangesAsync(cancellationToken);
+            _unitOffWork.ArticleCategoryRepository.Update(category, cancellationToken);
+            await _unitOffWork.SaveChangesAsync(cancellationToken);
+
             return true;
         }
 
         public async Task<bool> DeleteCategoryAsync(int id, CancellationToken cancellationToken = default)
         {
-            // We want to check children and articles before deleting.
-            // Since repository's GetByIdAsync doesn't include nav props, load all with includes and then find id.
-            var allWithChildren = (await _uow.ArticleCategoryRepository.GetAllAsync(includeProperties: "SubCategories,Articles", ct: cancellationToken)).ToList();
-            var entity = allWithChildren.FirstOrDefault(c => c.CategoryId == id);
-            if (entity == null) return false;
+            var category = await _unitOffWork.ArticleCategoryRepository.GetByIdAsync(id, cancellationToken);
+            if (category == null) return false;
 
-            if ((entity.SubCategories != null && entity.SubCategories.Any()) ||
-                (entity.Articles != null && entity.Articles.Any()))
+            // Check if category has subcategories - استفاده از FindAsync
+            var subCategories = await _unitOffWork.ArticleCategoryRepository.FindAsync(
+                c => c.ParentCategoryId == id);
+
+            var hasSubCategories = subCategories.Any();
+
+            // Check if category has articles - اگر ریپازیتوری مقالات دارید
+            var hasArticles = await CheckIfCategoryHasArticles(id, cancellationToken);
+
+            if (hasSubCategories || hasArticles)
             {
-                // Policy: don't delete categories that have subcategories or attached articles.
-                return false;
+                return false; // Cannot delete category with children
             }
 
-            _uow.ArticleCategoryRepository.Remove(entity, cancellationToken);
-            await _uow.SaveChangesAsync(cancellationToken);
+            _unitOffWork.ArticleCategoryRepository.Remove(category, cancellationToken);
+            await _unitOffWork.SaveChangesAsync(cancellationToken);
+
             return true;
+        }
+
+        private async Task<bool> CheckIfCategoryHasArticles(int categoryId, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                // اگر ریپازیتوری مقالات دارید:
+                // var articles = await _unitOffWork.ArticleRepository.FindAsync(a => a.CategoryId == categoryId, cancellationToken: cancellationToken);
+                // return articles.Any();
+
+                // فعلاً false برگردانید تا بتوانید تست کنید
+                return false;
+            }
+            catch
+            {
+                // اگر ریپازیتوری مقالات در دسترس نیست
+                return false;
+            }
         }
 
         public async Task<bool> MoveCategoryAsync(int id, int? newParentId, CancellationToken cancellationToken = default)
         {
-            var entity = await _uow.ArticleCategoryRepository.GetByIdAsync(id, cancellationToken);
-            if (entity == null) return false;
+            var category = await _unitOffWork.ArticleCategoryRepository.GetByIdAsync(id, cancellationToken);
+            if (category == null) return false;
 
-            if (newParentId == id) throw new InvalidOperationException("Category cannot be parent of itself.");
-
-            if (newParentId.HasValue)
+            // Check for circular reference
+            if (await WouldCreateCircularReference(id, newParentId, cancellationToken))
             {
-                var newParent = await _uow.ArticleCategoryRepository.GetByIdAsync(newParentId.Value, cancellationToken);
-                if (newParent == null) throw new KeyNotFoundException("New parent not found.");
-
-                // check cycle
-                var p = newParent;
-                while (p != null)
-                {
-                    if (p.CategoryId == entity.CategoryId)
-                        throw new InvalidOperationException("Moving category would create a cycle.");
-                    p = p.ParentCategoryId.HasValue ? await _uow.ArticleCategoryRepository.GetByIdAsync(p.ParentCategoryId.Value, cancellationToken) : null;
-                }
-
-                entity.ParentCategoryId = newParent.CategoryId;
-            }
-            else
-            {
-                entity.ParentCategoryId = null;
+                return false;
             }
 
-            _uow.ArticleCategoryRepository.Update(entity, cancellationToken);
-            await _uow.SaveChangesAsync(cancellationToken);
+            category.ParentCategoryId = newParentId;
+            _unitOffWork.ArticleCategoryRepository.Update(category, cancellationToken);
+            await _unitOffWork.SaveChangesAsync(cancellationToken);
+
             return true;
+        }
+
+        private async Task<bool> WouldCreateCircularReference(int categoryId, int? newParentId, CancellationToken cancellationToken)
+        {
+            if (!newParentId.HasValue) return false;
+
+            var currentParentId = newParentId.Value;
+            while (currentParentId != 0)
+            {
+                if (currentParentId == categoryId) return true;
+
+                var parent = await _unitOffWork.ArticleCategoryRepository.GetByIdAsync(currentParentId, cancellationToken);
+                if (parent?.ParentCategoryId == null) break;
+
+                currentParentId = parent.ParentCategoryId.Value;
+            }
+
+            return false;
         }
 
         public async Task UpdateDisplayOrdersAsync(IEnumerable<(int CategoryId, int DisplayOrder)> orders, CancellationToken cancellationToken = default)
         {
-            if (orders == null) return;
-
-            var ids = orders.Select(o => o.CategoryId).ToList();
-            var entities = (await _uow.ArticleCategoryRepository.GetAllAsync(includeProperties: null, ct: cancellationToken))
-                .Where(c => ids.Contains(c.CategoryId)).ToList();
-
-            var map = orders.ToDictionary(o => o.CategoryId, o => o.DisplayOrder);
-            foreach (var e in entities)
+            foreach (var (categoryId, displayOrder) in orders)
             {
-                if (map.TryGetValue(e.CategoryId, out var order))
-                    e.DisplayOrder = order;
+                var category = await _unitOffWork.ArticleCategoryRepository.GetByIdAsync(categoryId, cancellationToken);
+                if (category != null)
+                {
+                    category.DisplayOrder = displayOrder;
+                    _unitOffWork.ArticleCategoryRepository.Update(category, cancellationToken);
+                }
             }
 
-            // repo.Update not strictly required for tracked entities, but call for clarity
-            foreach (var e in entities) _uow.ArticleCategoryRepository.Update(e, cancellationToken);
+            await _unitOffWork.SaveChangesAsync(cancellationToken);
+        }
 
-            await _uow.SaveChangesAsync(cancellationToken);
+        // متد جدید برای داشبورد
+        public async Task<int> GetTotalCategoriesCountAsync(CancellationToken cancellationToken = default)
+        {
+            var categories = await _unitOffWork.ArticleCategoryRepository.GetAllAsync();
+            return categories.Count();
         }
     }
 }

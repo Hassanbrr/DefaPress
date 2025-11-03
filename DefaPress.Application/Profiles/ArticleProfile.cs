@@ -61,7 +61,7 @@ namespace DefaPress.Application.Profiles
                 .ForMember(dest => dest.Tags, opt => opt.Ignore())
                 .ForMember(dest => dest.MediaFiles, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore()) // CreatedAt نباید از DTO بازنویسی بشه
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => System.DateTime.UtcNow)); // می‌تونیم UpdatedAt رو ست کنیم
+                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow)); // می‌تونیم UpdatedAt رو ست کنیم
 
 
         }

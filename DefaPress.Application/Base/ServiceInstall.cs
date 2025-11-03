@@ -15,12 +15,11 @@ namespace DefaPress.Application.Base
         public static void InstallServices(this IServiceCollection services)
         {
             services.AddScoped<IArticleCategoryService, ArticleCategoryService>();
-
+            services.AddScoped<IArticleService, ArticleService>();
             services.AddFluentValidationAutoValidation();
             services.AddFluentValidationClientsideAdapters();
             services.AddValidatorsFromAssemblyContaining<ArticleCategoryCreateDtoValidator>();
-
-
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }
 } 

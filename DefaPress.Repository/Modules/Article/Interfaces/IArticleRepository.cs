@@ -4,5 +4,5 @@ namespace DefaPress.Infrastructure.Modules.Article.Interfaces;
 
 public interface IArticleRepository : IRepository<Domain.Article>
 {
-    
-}
+
+ }
