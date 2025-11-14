@@ -1,0 +1,598 @@
+﻿@using DefaPress.Application.DTOs
+@using Helps
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<PollDto>
+
+@{
+    ViewData["Title"] = "مدیریت نظرسنجی‌ها";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Admin/css/neon-core.css" />
+    <link rel="stylesheet" href="~/Admin/css/neon-forms.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css" />
+    <style>
+        /* استایل‌های خاص صفحه نظرسنجی‌ها */
+        .poll-table-container {
+            background: rgba(30, 30, 46, 0.8);
+            border-radius: 20px;
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            overflow: hidden;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .table {
+            margin: 0;
+            color: #fff;
+        }
+
+            .table thead th {
+                background: rgba(147, 51, 234, 0.2);
+                border-bottom: 2px solid rgba(147, 51, 234, 0.5);
+                font-weight: 700;
+                padding: 15px 10px;
+                text-align: center;
+                vertical-align: middle;
+            }
+
+            .table tbody td {
+                padding: 12px 10px;
+                vertical-align: middle;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                text-align: center;
+            }
+
+            .table tbody tr:hover {
+                background: rgba(147, 51, 234, 0.1);
+            }
+
+        .poll-question {
+            font-weight: 600;
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .status-active {
+            background: linear-gradient(135deg, #22C55E, #16A34A);
+            color: white;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+        }
+
+        .status-inactive {
+            background: linear-gradient(135deg, #6B7280, #4B5563);
+            color: white;
+            box-shadow: 0 0 10px rgba(107, 114, 128, 0.4);
+        }
+
+        .status-expired {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+            color: white;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+        }
+
+        .poll-stats {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stat-number {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #88ffff;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #94A3B8;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: nowrap;
+        }
+
+        .neon-action-btn {
+            min-width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .neon-action-btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+                transition: left 0.6s ease;
+            }
+
+            .neon-action-btn:hover::before {
+                left: 100%;
+            }
+
+            .neon-action-btn.edit {
+                background: linear-gradient(135deg, #22C55E, #16A34A);
+                color: white;
+                box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+            }
+
+            .neon-action-btn.results {
+                background: linear-gradient(135deg, #3178E8, #9333EA);
+                color: white;
+                box-shadow: 0 0 15px rgba(49, 120, 232, 0.4);
+            }
+
+            .neon-action-btn.toggle {
+                background: linear-gradient(135deg, #F59E0B, #EAB308);
+                color: white;
+                box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+            }
+
+            .neon-action-btn.delete {
+                background: linear-gradient(135deg, #EF4444, #DC2626);
+                color: white;
+                box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+            }
+
+            .neon-action-btn:hover {
+                transform: translateY(-3px) scale(1.1);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            }
+
+        /* استایل‌های پیشرفته برای نتایج */
+        .poll-option-result {
+            margin-bottom: 10px;
+        }
+
+        .option-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .progress {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3178E8, #9333EA);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        /* استایل‌های ریسپانسیو */
+        @@media (max-width: 768px) {
+            .table thead {
+                display: none;
+            }
+
+            .table, .table tbody, .table tr, .table td {
+                display: block;
+                width: 100%;
+            }
+
+                .table tr {
+                    margin-bottom: 15px;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 10px;
+                    padding: 10px;
+                }
+
+                .table td {
+                    text-align: left;
+                    padding: 10px;
+                    border: none;
+                }
+
+                    .table td::before {
+                        content: attr(data-label);
+                        font-weight: bold;
+                        display: inline-block;
+                        width: 120px;
+                        color: #88ffff;
+                    }
+
+            .action-buttons {
+                justify-content: flex-start;
+            }
+
+            .poll-stats {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+}
+
+<div class="container-fluid py-4">
+    <!-- هدر صفحه -->
+    <div class="neon-header-section">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="neon-main-title">📊 مدیریت نظرسنجی‌ها</h1>
+                <p class="neon-subtitle">ایجاد، ویرایش و مدیریت نظرسنجی‌های سایت</p>
+            </div>
+            <div class="col-md-4 text-left">
+                <button class="neon-create-btn" id="mainCreateButton">
+                    <i class="fas fa-plus"></i>
+                    نظرسنجی جدید
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- آمار سریع -->
+    <div class="neon-stats-grid">
+        <div class="neon-stat-card">
+            <div class="neon-stat-icon">
+                <i class="fas fa-poll"></i>
+            </div>
+            <div class="neon-stat-number persianumber" id="totalPolls">@Model.Count</div>
+            <div class="neon-stat-label">کل نظرسنجی‌ها</div>
+        </div>
+        <div class="neon-stat-card">
+            <div class="neon-stat-icon">
+                <i class="fas fa-play-circle"></i>
+            </div>
+            <div class="neon-stat-number persianumber" id="activePolls">@Model.Count(p => p.IsActive)</div>
+            <div class="neon-stat-label">فعال</div>
+        </div>
+        <div class="neon-stat-card">
+            <div class="neon-stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="neon-stat-number persianumber" id="totalVotes">@Model.Sum(p => p.TotalVotes)</div>
+            <div class="neon-stat-label">کل آراء</div>
+        </div>
+        <div class="neon-stat-card">
+            <div class="neon-stat-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="neon-stat-number persianumber" id="avgParticipation">
+                @(Model.Count > 0 ? (Model.Sum(p => p.TotalVotes) / Model.Count) : 0)
+            </div>
+            <div class="neon-stat-label">میانگین مشارکت</div>
+        </div>
+    </div>
+
+    <!-- جدول نظرسنجی‌ها -->
+    <div class="neon-container">
+        <div class="poll-table-container">
+            <table id="pollsTable" class="table">
+                <thead>
+                    <tr>
+                        <th>سوال نظرسنجی</th>
+                        <th>تعداد گزینه‌ها</th>
+                        <th>تعداد آراء</th>
+                        <th>وضعیت</th>
+                        <th>تاریخ ایجاد</th>
+                        <th>آمار</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var poll in Model.OrderByDescending(p => p.Id))
+                    {
+                        var isExpired = poll.Options.Any() && poll.Options.First().Percentage > 0 && !poll.IsActive;
+                        <tr>
+                            <td data-label="سوال نظرسنجی">
+                                <span class="poll-question" title="@poll.Question">@poll.Question</span>
+                            </td>
+                            <td data-label="تعداد گزینه‌ها">
+                                <span class="persianumber">@poll.Options.Count</span>
+                            </td>
+                            <td data-label="تعداد آراء">
+                                <span class="persianumber">@poll.TotalVotes</span>
+                            </td>
+                            <td data-label="وضعیت">
+                                @if (isExpired)
+                                {
+                                    <span class="status-badge status-expired">منقضی شده</span>
+                                }
+                                else if (poll.IsActive)
+                                {
+                                    <span class="status-badge status-active">فعال</span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge status-inactive">غیرفعال</span>
+                                }
+                            </td>
+                            <td data-label="تاریخ ایجاد">
+                                <span>@DateTime.Now.ToPersianDateString()</span>
+                            </td>
+                            <td data-label="آمار">
+                                <div class="poll-stats">
+                                    @foreach (var option in poll.Options.Take(2))
+                                    {
+                                        <div class="stat-item">
+                                            <div class="stat-number">@option.Percentage%</div>
+                                            <div class="stat-label">@option.Text</div>
+                                        </div>
+                                    }
+                                    @if (poll.Options.Count > 2)
+                                    {
+                                        <div class="stat-item">
+                                            <div class="stat-number">+@(poll.Options.Count - 2)</div>
+                                            <div class="stat-label">گزینه دیگر</div>
+                                        </div>
+                                    }
+                                </div>
+                            </td>
+                            <td data-label="عملیات">
+                                <div class="action-buttons">
+                                    <button class="neon-action-btn results" data-id="@poll.Id" title="مشاهده نتایج">
+                                        <i class="fas fa-chart-bar"></i>
+                                    </button>
+                                    <button class="neon-action-btn edit" data-id="@poll.Id" title="ویرایش">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="neon-action-btn toggle" data-id="@poll.Id"
+                                            title="@(poll.IsActive ? "غیرفعال کردن" : "فعال کردن")">
+                                        <i class="fas @(poll.IsActive ? "fa-pause" : "fa-play")"></i>
+                                    </button>
+                                    <button class="neon-action-btn delete" data-id="@poll.Id" title="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal ایجاد نظرسنجی -->
+<div class="modal fade" id="createPollModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background: linear-gradient(135deg, #1E1E1E 0%, #2a2a2a 100%); border: 1px solid rgba(147, 51, 234, 0.3);">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(147, 51, 234, 0.2);">
+                <h5 class="modal-title" style="color: #9333EA; font-weight: 700;">📊 ایجاد نظرسنجی جدید</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" style="opacity: 0.8;">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="createPollModalBody" style="padding: 0;">
+                <!-- محتوای مودال توسط AJAX لود می‌شود -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal مشاهده نتایج -->
+<div class="modal fade" id="resultsPollModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background: linear-gradient(135deg, #1E1E1E 0%, #2a2a2a 100%); border: 1px solid rgba(34, 197, 94, 0.3);">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(34, 197, 94, 0.2);">
+                <h5 class="modal-title" style="color: #22C55E; font-weight: 700;">📈 نتایج نظرسنجی</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" style="opacity: 0.8;">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="resultsPollModalBody" style="padding: 20px;">
+                <!-- محتوای مودال توسط AJAX لود می‌شود -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+
+    <script>
+        // فعال کردن DataTable
+        $(document).ready(function () {
+            $('#pollsTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/fa.json"
+                },
+                "responsive": true,
+                "columnDefs": [
+                    { "orderable": false, "targets": [5, 6] }
+                ]
+            });
+
+            // بارگذاری مودال ایجاد
+            $('#mainCreateButton').click(function () {
+                $('#createPollModalBody').load('@Url.Action("Create", "AdminPoll")', function () {
+                    $('#createPollModal').modal('show');
+                    initializePollForm();
+                });
+            });
+
+            // بارگذاری مودال نتایج
+            $(document).on('click', '.neon-action-btn.results', function () {
+                var pollId = $(this).data('id');
+                $('#resultsPollModalBody').load('@Url.Action("Results", "AdminPoll")/' + pollId, function () {
+                    $('#resultsPollModal').modal('show');
+                });
+            });
+
+            // فعال/غیرفعال کردن نظرسنجی
+            $(document).on('click', '.neon-action-btn.toggle', function () {
+                var pollId = $(this).data('id');
+                togglePoll(pollId);
+            });
+
+            // حذف نظرسنجی
+            $(document).on('click', '.neon-action-btn.delete', function () {
+                var pollId = $(this).data('id');
+                deletePoll(pollId);
+            });
+        });
+
+        // تابع برای راه‌اندازی فرم نظرسنجی
+        function initializePollForm() {
+            let optionCount = 2;
+
+            // افزودن گزینه جدید
+            $(document).on('click', '#addOption', function () {
+                optionCount++;
+                const optionHtml = `
+                    <div class="poll-option-item input-group mb-2">
+                        <input type="text" class="form-control neon-input" name="Options"
+                               placeholder="متن گزینه ${optionCount}" required>
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-danger remove-option">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                $('#pollOptionsContainer').append(optionHtml);
+            });
+
+            // حذف گزینه
+            $(document).on('click', '.remove-option', function () {
+                if ($('.poll-option-item').length > 2) {
+                    $(this).closest('.poll-option-item').remove();
+                    optionCount--;
+                } else {
+                    Swal.fire('خطا!', 'حداقل دو گزینه مورد نیاز است', 'warning');
+                }
+            });
+        }
+
+        // توابع مدیریت نظرسنجی‌ها
+        function togglePoll(id) {
+            Swal.fire({
+                title: 'تغییر وضعیت نظرسنجی',
+                text: "آیا از تغییر وضعیت این نظرسنجی اطمینان دارید؟",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'بله، تغییر بده',
+                cancelButtonText: 'لغو',
+                confirmButtonColor: '#F59E0B',
+                cancelButtonColor: '#6B7280'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("Toggle", "AdminPoll")/' + id,
+                        type: 'PUT',
+                        success: function (result) {
+                            if (result.success) {
+                                Swal.fire({
+                                    title: 'موفقیت آمیز!',
+                                    text: 'وضعیت نظرسنجی با موفقیت تغییر کرد',
+                                    icon: 'success',
+                                    confirmButtonText: 'باشه',
+                                    confirmButtonColor: '#22C55E'
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'خطا!',
+                                    text: result.message || 'خطا در تغییر وضعیت',
+                                    icon: 'error',
+                                    confirmButtonText: 'متوجه شدم'
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: 'خطای سرور!',
+                                text: 'خطا در ارتباط با سرور',
+                                icon: 'error',
+                                confirmButtonText: 'متوجه شدم'
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        function deletePoll(id) {
+            Swal.fire({
+                title: 'حذف نظرسنجی',
+                text: "آیا از حذف این نظرسنجی اطمینان دارید؟ این عمل غیرقابل بازگشت است!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'بله، حذف کن',
+                cancelButtonText: 'لغو',
+                confirmButtonColor: '#EF4444',
+                cancelButtonColor: '#6B7280',
+                dangerMode: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("Delete", "AdminPoll")/' + id,
+                        type: 'DELETE',
+                        success: function (result) {
+                            if (result.success) {
+                                Swal.fire({
+                                    title: 'حذف شد!',
+                                    text: 'نظرسنجی با موفقیت حذف شد',
+                                    icon: 'success',
+                                    confirmButtonText: 'باشه',
+                                    confirmButtonColor: '#22C55E'
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'خطا!',
+                                    text: result.message || 'خطا در حذف نظرسنجی',
+                                    icon: 'error',
+                                    confirmButtonText: 'متوجه شدم'
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: 'خطای سرور!',
+                                text: 'خطا در ارتباط با سرور',
+                                icon: 'error',
+                                confirmButtonText: 'متوجه شدم'
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

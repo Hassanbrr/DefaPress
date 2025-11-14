@@ -7,6 +7,9 @@ using DefaPress.Infrastructure.Modules.Comment.Interfaces;
 using DefaPress.Infrastructure.Modules.ContactMessage.Interfaces;
 using DefaPress.Infrastructure.Modules.MediaFile.Interfaces;
 using DefaPress.Infrastructure.Modules.NewsletterSubscriber.Interfaces;
+using DefaPress.Infrastructure.Modules.Poll.Interfaces;
+using DefaPress.Infrastructure.Modules.PollOption.Interfaces;
+using DefaPress.Infrastructure.Modules.PollVote.Interfaces;
 using DefaPress.Infrastructure.Modules.Setting.Interfaces;
 using DefaPress.Infrastructure.Modules.Tag.Interfaces;
 
@@ -16,6 +19,7 @@ namespace DefaPress.Infrastructure.Modules.Base.Implements
     {
         private readonly ApplicationDbContext _context;
 
+        // Existing repositories...
         public IArticleRepository ArticleRepository { get; private set; }
         public IArticleCategoryRepository ArticleCategoryRepository { get; private set; }
         public ICommentRepository CommentRepository { get; private set; }
@@ -25,6 +29,11 @@ namespace DefaPress.Infrastructure.Modules.Base.Implements
         public ISettingRepository SettingRepository { get; private set; }
         public ITagRepository TagRepository { get; private set; }
         public IAuditLogRepository AuditLogRepository { get; private set; }
+        public IPollRepository PollRepository { get; private set; }
+
+        // New repositories
+        public IPollOptionRepository PollOptionRepository { get; private set; }
+        public IPollVoteRepository PollVoteRepository { get; private set; }
 
         public UnitOfWork(
             ApplicationDbContext context,
@@ -36,7 +45,10 @@ namespace DefaPress.Infrastructure.Modules.Base.Implements
             INewsletterSubscriberRepository newsletterSubscriberRepository,
             ISettingRepository settingRepository,
             ITagRepository tagRepository,
-            IAuditLogRepository auditLogRepository)
+            IAuditLogRepository auditLogRepository,
+            IPollRepository pollRepository,
+            IPollOptionRepository pollOptionRepository, // اضافه شد
+            IPollVoteRepository pollVoteRepository)     // اضافه شد
         {
             _context = context;
             ArticleRepository = articleRepository;
@@ -48,6 +60,9 @@ namespace DefaPress.Infrastructure.Modules.Base.Implements
             SettingRepository = settingRepository;
             TagRepository = tagRepository;
             AuditLogRepository = auditLogRepository;
+            PollRepository = pollRepository;
+            PollOptionRepository = pollOptionRepository;
+            PollVoteRepository = pollVoteRepository;
         }
 
         public async Task SaveChangesAsync(CancellationToken ct = default)

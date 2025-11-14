@@ -1,0 +1,164 @@
+﻿@model DefaPress.Application.DTOs.PollDto
+
+<style>
+    .results-container {
+        background: rgba(0, 10, 20, 0.8);
+        border-radius: 15px;
+        padding: 20px;
+    }
+
+    .results-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        border-radius: 10px;
+        background: rgba(0, 20, 40, 0.6);
+        border: 1px solid rgba(0, 247, 255, 0.2);
+    }
+
+    .results-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #88ffff;
+        margin-bottom: 10px;
+    }
+
+    .results-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: rgba(0, 20, 40, 0.6);
+        border: 1px solid rgba(0, 247, 255, 0.3);
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #00f7ff;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        color: #94A3B8;
+        font-size: 0.9rem;
+    }
+
+    .poll-option-result {
+        margin-bottom: 20px;
+        padding: 15px;
+        background: rgba(0, 30, 60, 0.6);
+        border-radius: 10px;
+        border: 1px solid rgba(0, 247, 255, 0.2);
+    }
+
+    .option-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .option-text {
+        font-weight: 600;
+        color: #ffffff;
+        flex: 1;
+    }
+
+    .option-stats {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .option-votes {
+        color: #00f7ff;
+        font-weight: bold;
+    }
+
+    .option-percentage {
+        color: #88ffff;
+        font-weight: bold;
+        min-width: 60px;
+    }
+
+    .progress {
+        height: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #3178E8, #9333EA);
+        border-radius: 10px;
+        transition: width 1s ease-in-out;
+    }
+</style>
+
+<div class="results-container">
+    <div class="results-header">
+        <h3 class="results-title">📈 نتایج نظرسنجی</h3>
+        <p style="color: #94A3B8; margin: 0;">@Model.Question</p>
+    </div>
+
+    <div class="results-stats">
+        <div class="stat-card">
+            <div class="stat-number persianumber">@Model.TotalVotes</div>
+            <div class="stat-label">کل آراء</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">@Model.Options.Count</div>
+            <div class="stat-label">تعداد گزینه‌ها</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">@(Model.IsActive ? "فعال" : "غیرفعال")</div>
+            <div class="stat-label">وضعیت</div>
+        </div>
+    </div>
+
+    <div class="poll-results">
+        @foreach (var option in Model.Options.OrderByDescending(o => o.VoteCount))
+        {
+            <div class="poll-option-result">
+                <div class="option-header">
+                    <div class="option-text">@option.Text</div>
+                    <div class="option-stats">
+                        <span class="option-votes persianumber">@option.VoteCount رأی</span>
+                        <span class="option-percentage">@option.Percentage%</span>
+                    </div>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" style="width: @option.Percentage%"></div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <button type="button" class="neon-btn secondary" data-dismiss="modal">
+            <i class="fas fa-times"></i>
+            بستن
+        </button>
+    </div>
+</div>
+
+<script>
+    // انیمیشن progress bars
+    $(document).ready(function () {
+        $('.progress-bar').each(function () {
+            var width = $(this).css('width');
+            $(this).css('width', '0');
+            setTimeout(() => {
+                $(this).css('width', width);
+            }, 100);
+        });
+    });
+</script>

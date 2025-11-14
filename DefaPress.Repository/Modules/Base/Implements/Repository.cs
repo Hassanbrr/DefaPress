@@ -22,7 +22,7 @@ public class Repository<T> : IRepository<T> where T : class
     {
         await _dbSet.AddAsync(entity);
     }
-
+    
     public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, string? includeProperties = null, CancellationToken ct = default)
     {
         IQueryable<T> query = _dbSet.AsNoTracking().Where(predicate); // حذف ToListAsync در این مرحله
@@ -62,10 +62,29 @@ public class Repository<T> : IRepository<T> where T : class
         return await query.ToListAsync();
     }
 
-    public async Task<T> GetByIdAsync(object id, CancellationToken ct = default)
+    public async Task<T?> GetByIdAsync(object id, string? includeProperties = null, CancellationToken ct = default)
     {
-        return await _dbSet.FindAsync(id);
+        IQueryable<T> query = _dbSet;
+
+        if (!string.IsNullOrEmpty(includeProperties))
+        {
+            foreach (var includeProp in includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProp);
+            }
+        }
+
+        // پیدا کردن کلید اصلی از EF Core Metadata
+        var entityType = _context.Model.FindEntityType(typeof(T));
+        var keyName = entityType?.FindPrimaryKey()?.Properties.FirstOrDefault()?.Name;
+
+        if (string.IsNullOrEmpty(keyName))
+            throw new InvalidOperationException($"Entity '{typeof(T).Name}' does not have a defined primary key.");
+
+        // ساخت expression ساده برای e => EF.Property<object>(e, keyName) == id
+        return await query.FirstOrDefaultAsync(e => EF.Property<object>(e, keyName!).Equals(id), ct);
     }
+
 
     public void Remove(T entity, CancellationToken ct = default)
     {

@@ -52,6 +52,8 @@ namespace DefaPress.Presentation.Web.Infrastructure.Extensions
             {
                 cfg.AddProfile<ArticleProfile>();
                 cfg.AddProfile<ArticleCategoryProfile>(); // اگر پروفایل‌های دیگه داری
+                cfg.AddProfile<PollProfile>(); // اگر پروفایل‌های دیگه داری
+
             });
         }
 

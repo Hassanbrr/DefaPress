@@ -1,0 +1,121 @@
+﻿@* Views/TagAdmin/Index.cshtml *@
+@model IEnumerable<DefaPress.Domain.Tag>
+
+<div class="container-fluid py-4">
+    <div class="neon-header-section">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="neon-main-title">🏷️ مدیریت تگ‌ها</h1>
+                <p class="neon-subtitle">ایجاد و مدیریت تگ‌های مقالات</p>
+            </div>
+            <div class="col-md-4 text-left">
+                <button class="neon-create-btn" id="createTagButton">
+                    <i class="fas fa-plus"></i>
+                    تگ جدید
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="neon-container">
+        <div class="article-table-container">
+            <table id="tagsTable" class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>نام تگ</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var tag in Model)
+                    {
+                        <tr>
+                            <td>@tag.TagId</td>
+                            <td>@tag.Name</td>
+                            <td>
+                                <button class="neon-action-btn delete" data-id="@tag.TagId">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal ایجاد تگ -->
+<div class="modal fade" id="createTagModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background: linear-gradient(135deg, #1E1E1E 0%, #2a2a2a 100%); border: 1px solid rgba(147, 51, 234, 0.3);">
+            <div class="modal-header">
+                <h5 class="modal-title" style="color: #9333EA;">ایجاد تگ جدید</h5>
+                <button type="button" class="close text-white" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>نام تگ</label>
+                    <input type="text" id="tagName" class="form-control" placeholder="نام تگ را وارد کنید..." />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">انصراف</button>
+                <button type="button" class="btn btn-success" id="saveTagButton">ذخیره</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // ایجاد تگ جدید
+            $('#createTagButton').click(function () {
+                $('#createTagModal').modal('show');
+            });
+
+            $('#saveTagButton').click(function () {
+                var tagName = $('#tagName').val();
+                if (!tagName) {
+                    alert('لطفا نام تگ را وارد کنید.');
+                    return;
+                }
+
+                $.post('@Url.Action("Create", "TagAdmin")', { name: tagName })
+                    .done(function (result) {
+                        if (result.success) {
+                            $('#createTagModal').modal('hide');
+                            location.reload();
+                        } else {
+                            alert(result.message);
+                        }
+                    })
+                    .fail(function () {
+                        alert('خطا در ارتباط با سرور');
+                    });
+            });
+
+            // حذف تگ
+            $(document).on('click', '.neon-action-btn.delete', function () {
+                var tagId = $(this).data('id');
+                if (confirm('آیا از حذف این تگ اطمینان دارید؟')) {
+                    $.post('@Url.Action("Delete", "TagAdmin")/' + tagId)
+                        .done(function (result) {
+                            if (result.success) {
+                                location.reload();
+                            } else {
+                                alert(result.message);
+                            }
+                        })
+                        .fail(function () {
+                            alert('خطا در ارتباط با سرور');
+                        });
+                }
+            });
+        });
+    </script>
+}

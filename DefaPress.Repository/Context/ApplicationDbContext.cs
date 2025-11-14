@@ -1,8 +1,8 @@
-﻿// DefaPress.Infrastructure/Context/ApplicationDbContext.cs
+﻿using DefaPress.Domain;
+using DefaPress.Domain.PollModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using DefaPress.Domain;
-using Microsoft.AspNetCore.Identity;
 
 namespace DefaPress.Infrastructure.Context
 {
@@ -22,6 +22,11 @@ namespace DefaPress.Infrastructure.Context
         public DbSet<NewsletterSubscriber> NewsletterSubscribers { get; set; }
         public DbSet<ContactMessage> ContactMessages { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
+
+        // New DbSets for Poll
+        public DbSet<Poll> Polls { get; set; }
+        public DbSet<PollOption> PollOptions { get; set; }
+        public DbSet<PollVote> PollVotes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -50,7 +55,7 @@ namespace DefaPress.Infrastructure.Context
                 b.HasOne(c => c.ParentCategory)
                     .WithMany(p => p.SubCategories)
                     .HasForeignKey(c => c.ParentCategoryId)
-                    .OnDelete(DeleteBehavior.Restrict); // جلوگیری از حذف والد هنگام وجود فرزند
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             // ----------------------------
@@ -76,7 +81,7 @@ namespace DefaPress.Infrastructure.Context
                     .IsRequired()
                     .HasMaxLength(300);
 
-                b.Property(a => a.Slug)  
+                b.Property(a => a.Slug)
                     .HasMaxLength(250);
 
                 b.Property(a => a.Summary)
@@ -98,7 +103,7 @@ namespace DefaPress.Infrastructure.Context
                 b.HasOne(a => a.ArticleCategory)
                     .WithMany(c => c.Articles)
                     .HasForeignKey(a => a.ArticleCategoryId)
-                    .OnDelete(DeleteBehavior.Restrict); // جلوگیری از حذف دسته وقتی مقاله وجود دارد
+                    .OnDelete(DeleteBehavior.Restrict);
 
                 // Article -> Author (ApplicationUser)  (AuthorId nullable)
                 b.HasOne(a => a.Author)
@@ -112,7 +117,7 @@ namespace DefaPress.Infrastructure.Context
                     .HasForeignKey(m => m.ArticleId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-                // many-to-many Article <-> Tag (skip-navigation, explicit join table name ArticleTags)
+                // many-to-many Article <-> Tag
                 b.HasMany(a => a.Tags)
                  .WithMany(t => t.Articles)
                  .UsingEntity<Dictionary<string, object>>(
@@ -149,7 +154,7 @@ namespace DefaPress.Infrastructure.Context
                 b.HasOne(c => c.User)
                     .WithMany(u => u.Comments)
                     .HasForeignKey(c => c.UserId)
-                    .OnDelete(DeleteBehavior.Restrict); // جلوگیری از حذف کاربر در صورت وجود کامنت
+                    .OnDelete(DeleteBehavior.Restrict);
 
                 // Nested comments (parent-child)
                 b.HasOne(c => c.ParentComment)
@@ -168,7 +173,7 @@ namespace DefaPress.Infrastructure.Context
                 b.Property(m => m.FileUrl).IsRequired().HasMaxLength(1000);
                 b.Property(m => m.FileType).HasMaxLength(100);
                 b.HasIndex(m => m.UploadedAt);
-                // ArticleId is optional (nullable)
+
                 b.HasOne(m => m.Article)
                     .WithMany(a => a.MediaFiles)
                     .HasForeignKey(m => m.ArticleId)
@@ -222,7 +227,7 @@ namespace DefaPress.Infrastructure.Context
                 b.HasIndex(a => a.CreatedAt);
 
                 b.HasOne(a => a.User)
-                    .WithMany() // اگر خواستی navigation از User به AuditLogs اضافه کنی، اینجا تغییر بده
+                    .WithMany()
                     .HasForeignKey(a => a.UserId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
@@ -235,7 +240,91 @@ namespace DefaPress.Infrastructure.Context
                 b.Property(u => u.FullName).HasMaxLength(200);
                 b.Property(u => u.ProfileImageUrl).HasMaxLength(1000);
                 b.HasIndex(u => u.CreatedAt);
-                // Comments and Articles navigation defined on other entities
+            });
+
+            // ----------------------------
+            // Poll
+            // ----------------------------
+            builder.Entity<Poll>(b =>
+            {
+                b.HasKey(p => p.Id);
+
+                b.Property(p => p.Question)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                b.Property(p => p.CreatedAt)
+                    .IsRequired();
+
+                b.Property(p => p.ExpiresAt);
+
+                b.HasIndex(p => p.IsActive);
+                b.HasIndex(p => p.CreatedAt);
+
+                // Poll -> PollOptions (one-to-many)
+                b.HasMany(p => p.Options)
+                    .WithOne(o => o.Poll)
+                    .HasForeignKey(o => o.PollId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Poll -> PollVotes (one-to-many) - تغییر داده شد به Restrict
+                b.HasMany(p => p.Votes)
+                    .WithOne(v => v.Poll)
+                    .HasForeignKey(v => v.PollId)
+                    .OnDelete(DeleteBehavior.Restrict); // تغییر از Cascade به Restrict
+            });
+
+            // ----------------------------
+            // PollOption
+            // ----------------------------
+            builder.Entity<PollOption>(b =>
+            {
+                b.HasKey(o => o.Id);
+
+                b.Property(o => o.Text)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                b.Property(o => o.Order)
+                    .IsRequired();
+
+                // PollOption -> PollVotes (one-to-many)
+                b.HasMany(o => o.Votes)
+                    .WithOne(v => v.Option)
+                    .HasForeignKey(v => v.OptionId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // ----------------------------
+            // PollVote
+            // ----------------------------
+            builder.Entity<PollVote>(b =>
+            {
+                b.HasKey(v => v.Id);
+
+                b.Property(v => v.VoterIp)
+                    .HasMaxLength(45);
+
+                b.Property(v => v.VoterUserId)
+                    .HasMaxLength(450);
+
+                b.Property(v => v.VotedAt)
+                    .IsRequired();
+
+                // Indexes for preventing duplicate votes
+                b.HasIndex(v => new { v.PollId, v.VoterIp });
+                b.HasIndex(v => new { v.PollId, v.VoterUserId });
+
+                // Relationships
+                b.HasOne(v => v.Poll)
+                    .WithMany(p => p.Votes)
+                    .HasForeignKey(v => v.PollId)
+                    .OnDelete(DeleteBehavior.Restrict); // تغییر از Cascade به Restrict
+
+                b.HasOne(v => v.Option)
+                    .WithMany(o => o.Votes)
+                    .HasForeignKey(v => v.OptionId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

@@ -200,43 +200,7 @@
                                 </div>
                             </div>
 
-                            <ul class="submenu">
-                                <li class="li_subset"><a href="#" class="SettingMarkMeno">اقتصاد<span class="MarkMeno">اخبار جدید</span></a></li>
-                                <li class="li_subset"><a href="#">ورزش</a></li>
-                                <li class="li_subset"><a href="#">فرهنگ</a></li>
-                                <li class="li_subset"><a href="#">اخبار جهان</a></li>
-                                <li class="li_subset"><a href="#">اخبار حوادث</a></li>
-                                <li class="li_subset"><a href="#">مناسب ترین تور های مسافرتی</a></li>
-                                <li class="li_subset"><a href="#">لیست قیمت امروز آهن آلات</a></li>
-                                <li class="li_subset"><a href="#">قیمت سکه</a></li>
-                                <li class="li_subset"><a href="#">قیمت دلار</a></li>
-                                <li class="li_subset"><a href="#">قیمت طلا</a></li>
-                                <li class="li_subset"><a href="#">اخبار پزشکی و سلامت</a></li>
-                                <li class="li_subset"><a href="#">اخبار هنری</a></li>
-                                <li class="li_subset"><a href="#">اجاره ی خودرو سعادت رنت</a></li>
-                                <li class="li_subset"><a href="#">اخبار استخدامی</a></li>
-                                <li class="li_subset"><a href="#">خدمات بیمه</a></li>
-                                <li class="li_subset"><a href="#">اخبار تصویری</a></li>
-                                <li class="li_subset"><a href="#">اخبار ویدیویی</a></li>
-                                <li class="li_subset"><a href="#">اخبار خودرو</a></li>
-                                <li class="li_subset"><a href="#">بازار</a></li>
-                                <li class="li_subset"><a href="#">هوش مصنوعی</a></li>
-                                <li class="li_subset"><a href="#">دانش و فناوری</a></li>
-                                <li class="li_subset"><a href="#">اندیشه</a></li>
-                                <li class="li_subset"><a href="#">دین</a></li>
-                                <li class="li_subset"><a href="#">کافه خبر</a></li>
-                                <li class="li_subset"><a href="#">چند رسانه ای</a></li>
-                                <li class="li_subset"><a href="#">انتشارات</a></li>
-                                <li class="li_subset"><a href="#">وبلاگ</a></li>
-                                <li class="li_subset"><a href="#">استان ها</a></li>
-                                <li class="li_subset"><a href="#">شاخص آلودگی هوا</a></li>
-                                <li class="li_subset"><a href="#">آب و هوا</a></li>
-                                <li class="li_subset"><a href="#">اوقات شرعی</a></li>
-                                <li class="li_subset"><a href="#">پیوند ها</a></li>
-
-
-
-                            </ul>
+                            @await Component.InvokeAsync("ArticleCategories")
 
                         </div>
                     </li>
@@ -364,13 +328,13 @@
     <div class="back-to-top">
         <i class="fas fa-arrow-up"></i>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/Client/js/Shared_menu.js"></script>
     <script src="~/Client/js/MainMode4.js"></script>
     <script src="~/Client/js/ScrollerMeno.js"></script>
     <script src="~/Client/js/MenoSubset.js"></script>
     <script src="~/Client/js/buttonDynamic.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

@@ -1,0 +1,74 @@
+﻿@using Helps
+@model IEnumerable<DefaPress.Application.DTOs.ArticleListDto>
+
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-grid">
+            <div class="main-slider">
+                @{
+                    var featuredArticles = Model.OrderByDescending(u => u.IsFeatured && u.IsPublished).ToList();
+                    int index = 0;
+                }
+
+                @foreach (var featuredArticle in featuredArticles)
+                {
+                    <div class="slide @(index == 0 ? "active" : "")">
+                        <img src="@featuredArticle.ImageUrl" class="article-image" alt="@featuredArticle.Title"
+                             onerror="this.src='/images/placeholder.jpg'" />
+                        <div class="slide-overlay"></div>
+                        <div class="slide-content">
+                            <div class="slide-category">@featuredArticle.CategoryName</div>
+                            <h2 class="slide-title">@featuredArticle.Title</h2>
+                            <p class="slide-excerpt">@featuredArticle.Summary</p>
+                            <div class="slide-meta">
+                                <div class="meta-item">
+                                    <i class="far fa-clock"></i>
+                                    <span>@featuredArticle.PublishedAt?.ToPersianDateString()</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="far fa-eye"></i>
+                                    <span>@featuredArticle.ViewsCount بازدید</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    index++;
+                }
+
+                <div class="slider-controls">
+                    <div class="slider-dots">
+                        @for (int i = 0; i < featuredArticles.Count; i++)
+                        {
+                            <span class="slider-dot @(i == 0 ? "active" : "")" data-index="@i"></span>
+                        }
+                    </div>
+                    <div class="slider-arrows">
+                        <button class="slider-arrow slider-prev"><i class="fas fa-chevron-right"></i></button>
+                        <button class="slider-arrow slider-next"><i class="fas fa-chevron-left"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="side-news">
+                @foreach (var breakingArticle in Model.OrderByDescending(u => u.IsBreakingNews && u.IsPublished))
+                {
+                    <div class="side-card">
+                        <div class="side-card-image">
+                            <img src="@breakingArticle.ImageUrl" class="article-image" alt="@breakingArticle.Title" />
+                        </div>
+                        <div class="side-card-overlay"></div>
+                        <div class="side-card-content">
+                            <div class="side-card-category">@breakingArticle.CategoryName</div>
+                            <h3 class="side-card-title">@breakingArticle.Title</h3>
+                            <div class="side-card-meta">
+                                <i class="far fa-clock"></i>
+                                <span>@breakingArticle.PublishedAt?.ToPersianDateString()</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+

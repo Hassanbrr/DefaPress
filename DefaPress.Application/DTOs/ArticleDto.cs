@@ -2,7 +2,6 @@
 
 namespace DefaPress.Application.DTOs
 {
-    // DTOs/Article
     public class ArticleListDto
     {
         public int ArticleId { get; set; }
@@ -24,7 +23,7 @@ namespace DefaPress.Application.DTOs
         public string? AuthorName { get; set; }
 
         public List<string> TagNames { get; set; } = new();
-        public string? MainMediaUrl { get; set; } // optional convenience
+        public string? MainMediaUrl { get; set; }
     }
 
     public class ArticleDetailDto : ArticleListDto
@@ -42,6 +41,7 @@ namespace DefaPress.Application.DTOs
         public string? Summary { get; set; }
         public string Content { get; set; }
         public string? ImageUrl { get; set; }
+        public IFormFile? ImageFile { get; set; }
 
         public DateTime? PublishedAt { get; set; }
         public bool IsPublished { get; set; } = false;
@@ -52,10 +52,7 @@ namespace DefaPress.Application.DTOs
         public int ArticleCategoryId { get; set; }
         public string? AuthorId { get; set; }
 
-        // tags by id (many-to-many handled in service or resolver)
-        public List<int> TagIds { get; set; } = new();
-
-        // media upload (controller typically handles IFormFile)
+        public List<int> TagIds { get; set; } = new List<int>();
         public List<IFormFile>? MediaFiles { get; set; }
     }
 

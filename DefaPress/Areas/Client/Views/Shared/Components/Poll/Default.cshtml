@@ -1,0 +1,172 @@
+﻿@* Views/Shared/Components/Poll/Default.cshtml *@
+@model DefaPress.Application.DTOs.PollDto
+@using Microsoft.AspNetCore.Antiforgery
+@inject IAntiforgery Antiforgery
+
+@{
+    var tokenSet = Antiforgery.GetAndStoreTokens(Context);
+    var requestToken = tokenSet.RequestToken;
+}
+
+<!-- Poll Widget -->
+<div class="feature-card" id="poll-widget">
+    <div class="feature-header">
+        <i class="fas fa-poll"></i>
+        <span>نظرسنجی</span>
+    </div>
+    <div class="feature-content">
+
+        <!-- سوال نظرسنجی -->
+        <div class="poll-question">
+            @Model.Question
+        </div>
+
+        @if (!Model.HasVoted)
+        {
+            <!-- حالت رأی دادن -->
+            <div class="poll-options" id="poll-options">
+                @foreach (var option in Model.Options)
+                {
+                    <div class="poll-option" data-option-id="@option.Id">
+                        <div class="poll-radio">
+                            <input type="radio" name="pollOption" value="@option.Id" id="option_@option.Id" />
+                            <label for="option_@option.Id"></label>
+                        </div>
+                        <div class="poll-label">@option.Text</div>
+                    </div>
+                }
+            </div>
+            <button class="btn btn-primary poll-submit" id="poll-submit" disabled>ثبت نظر</button>
+
+            <!-- پیام خطا -->
+            <div class="alert alert-danger mt-2" id="poll-error" style="display: none;"></div>
+
+            <!-- توکن امنیتی -->
+            <input type="hidden" id="RequestVerificationToken" value="@requestToken" />
+        }
+        else
+        {
+            <!-- حالت نمایش نتایج -->
+            <div class="poll-results">
+                @foreach (var option in Model.Options)
+                {
+                    <div class="poll-result">
+                        <div class="poll-result-header">
+                            <div class="poll-result-label">@option.Text</div>
+                            <div class="poll-result-value">@option.Percentage%</div>
+                        </div>
+                        <div class="poll-result-bar">
+                            <div class="poll-result-progress" style="width: @option.Percentage%"></div>
+                        </div>
+                        <div class="poll-result-count">(@option.VoteCount رأی)</div>
+                    </div>
+                }
+            </div>
+            <div class="poll-total-votes mt-3">
+                <small class="text-muted">تعداد کل آراء: @Model.TotalVotes</small>
+            </div>
+        }
+    </div>
+</div>
+
+ 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const pollOptions = document.getElementById('poll-options');
+            const submitButton = document.getElementById('poll-submit');
+            const errorDiv = document.getElementById('poll-error');
+
+            if (pollOptions && submitButton) {
+                // مدیریت انتخاب گزینه
+                pollOptions.addEventListener('click', function(e) {
+                    const optionElement = e.target.closest('.poll-option');
+                    if (optionElement) {
+                        // حذف انتخاب قبلی
+                        document.querySelectorAll('.poll-option').forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+
+                        // انتخاب گزینه جدید
+                        optionElement.classList.add('selected');
+
+                        // فعال کردن دکمه ثبت
+                        submitButton.disabled = false;
+
+                        // مخفی کردن خطا
+                        if (errorDiv) errorDiv.style.display = 'none';
+                    }
+                });
+
+                // مدیریت ثبت رأی
+                submitButton.addEventListener('click', function() {
+                    const selectedOption = document.querySelector('.poll-option.selected');
+                    if (!selectedOption) {
+                        showError('لطفاً یک گزینه انتخاب کنید');
+                        return;
+                    }
+
+                    const optionId = selectedOption.dataset.optionId;
+                    const pollId = @Model.Id;
+
+                    submitVote(pollId, optionId);
+                });
+            }
+
+            function submitVote(pollId, optionId) {
+                const submitButton = document.getElementById('poll-submit');
+                const originalText = submitButton.textContent;
+
+                // نمایش حالت لودینگ
+                submitButton.disabled = true;
+                submitButton.textContent = 'در حال ثبت...';
+
+                // استفاده از توکن امنیتی
+                const token = document.getElementById('RequestVerificationToken').value;
+
+                // استفاده از مسیر صحیح برای Area
+                fetch('/Client/Poll/Vote', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        pollId: pollId,
+                        optionId: parseInt(optionId)
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('خطای شبکه: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // رفرش صفحه برای نمایش نتایج
+                        location.reload();
+                    } else {
+                        showError(data.message || 'خطا در ثبت رأی');
+                        submitButton.disabled = false;
+                        submitButton.textContent = originalText;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError('خطا در ارتباط با سرور');
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalText;
+                });
+            }
+
+            function showError(message) {
+                const errorDiv = document.getElementById('poll-error');
+                if (errorDiv) {
+                    errorDiv.textContent = message;
+                    errorDiv.style.display = 'block';
+                }
+            }
+        });
+    </script>
+ 

@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using DefaPress.Application.Interfaces;
 using DefaPress.Application.DTOs;
+using DefaPress.Application.Services.Interfaces;
 
 namespace DefaPress.Presentation.Web.Areas.Admin.Controllers
 {
+
     [Area("Admin")]
     [Authorize(Roles = "Admin,SuperAdmin")]
     public class DashboardController : Controller

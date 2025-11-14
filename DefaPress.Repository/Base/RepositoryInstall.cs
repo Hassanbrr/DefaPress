@@ -14,6 +14,12 @@ using DefaPress.Infrastructure.Modules.MediaFile.Implements;
 using DefaPress.Infrastructure.Modules.MediaFile.Interfaces;
 using DefaPress.Infrastructure.Modules.NewsletterSubscriber.Implements;
 using DefaPress.Infrastructure.Modules.NewsletterSubscriber.Interfaces;
+using DefaPress.Infrastructure.Modules.Poll.Implements;
+using DefaPress.Infrastructure.Modules.Poll.Interfaces;
+using DefaPress.Infrastructure.Modules.PollOption.Implements;
+using DefaPress.Infrastructure.Modules.PollOption.Interfaces;
+using DefaPress.Infrastructure.Modules.PollVote.Implements;
+using DefaPress.Infrastructure.Modules.PollVote.Interfaces;
 using DefaPress.Infrastructure.Modules.Setting.Implements;
 using DefaPress.Infrastructure.Modules.Setting.Interfaces;
 using DefaPress.Infrastructure.Modules.Tag.Implements;
@@ -39,7 +45,10 @@ namespace DefaPress.Infrastructure.Base
             services.AddScoped<ISettingRepository, SettingRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<IAuditLogRepository, AuditLogRepository>();
- 
+            services.AddScoped<IPollRepository, PollRepository>();
+            services.AddScoped<IPollOptionRepository, PollOptionRepository>();
+            services.AddScoped<IPollVoteRepository, PollVoteRepository>();
+
 
         }
     }

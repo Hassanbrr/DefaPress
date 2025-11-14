@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using DefaPress.Application.Interfaces;
 using DefaPress.Application.DTOs;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using DefaPress.Application.Services.Interfaces;
+using DefaPress.Infrastructure.Modules.Article.Interfaces;
 
 namespace DefaPress.Presentation.Web.Areas.Admin.Controllers
 {
@@ -13,7 +14,7 @@ namespace DefaPress.Presentation.Web.Areas.Admin.Controllers
     public class ArticleCategoryAdminController : Controller
     {
         private readonly IArticleCategoryService _categoryService;
-
+        
         public ArticleCategoryAdminController(IArticleCategoryService categoryService)
         {
             _categoryService = categoryService;
